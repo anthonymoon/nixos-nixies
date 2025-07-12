@@ -4,6 +4,9 @@
   pkgs,
   ...
 }: {
+  imports = [
+    ../modules/core
+  ];
   meta = {
     name = "base";
     description = "Base system profile with security defaults";

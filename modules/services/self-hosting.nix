@@ -1386,7 +1386,7 @@ in
               ];
 
             retentionTime = cfg.monitoring.prometheus.retention;
-            
+
             # Exporters configuration
             exporters = {
               node = lib.mkIf cfg.monitoring.exporters.node {
@@ -1543,7 +1543,6 @@ in
               "--label=traefik.http.routers.uptime-kuma.tls.certresolver=letsencrypt"
             ];
           };
-
 
           # cAdvisor
           virtualisation.oci-containers.containers.cadvisor = lib.mkIf cfg.monitoring.exporters.cadvisor {

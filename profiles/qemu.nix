@@ -387,7 +387,7 @@
     # Allow wheel group sudo without password for VMs
     sudo = {
       enable = true;
-      wheelNeedsPassword = false;
+      wheelNeedsPassword = false; # pragma: allowlist secret
     };
 
     # Disable some security features for VM convenience

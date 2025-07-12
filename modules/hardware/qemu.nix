@@ -363,7 +363,7 @@ in
     # Security configuration for QEMU VMs
     security = cfg: {
       # Relaxed security for VM environments
-      security.sudo.wheelNeedsPassword = lib.mkDefault false;
+      security.sudo.wheelNeedsPassword = lib.mkDefault false; # pragma: allowlist secret
 
       # Allow access to VM devices
       users.groups.kvm = {};

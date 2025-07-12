@@ -7,27 +7,27 @@
   # Boot and system initialization configuration
   options.unified.core.boot = with lib; {
     enable = mkEnableOption "unified boot configuration" // {default = true;};
-    
+
     loader = mkOption {
       type = types.enum ["systemd-boot" "grub"];
       default = "systemd-boot";
       description = "Boot loader to use";
     };
-    
+
     kernel = {
       hardening = mkEnableOption "kernel hardening parameters";
-      
+
       latestKernel = mkEnableOption "use latest kernel version";
-      
+
       customParams = mkOption {
         type = types.listOf types.str;
         default = [];
         description = "Additional kernel parameters";
       };
     };
-    
+
     plymouth = mkEnableOption "Plymouth boot splash screen";
-    
+
     initrd = {
       availableKernelModules = mkOption {
         type = types.listOf types.str;
@@ -40,21 +40,21 @@
           "usb_storage"
           "sd_mod"
           "sr_mod"
-          
+
           # File system support
           "ext4"
           "vfat"
-          
+
           # Network drivers for netboot
           "e1000e"
           "r8169"
         ];
         description = "Kernel modules available in initrd";
       };
-      
+
       luks = mkEnableOption "LUKS encryption support in initrd";
     };
-    
+
     tmpOnTmpfs = mkEnableOption "mount /tmp on tmpfs" // {default = true;};
   };
 
@@ -71,7 +71,7 @@
           };
           efi.canTouchEfiVariables = true;
         })
-        
+
         (lib.mkIf (config.unified.core.boot.loader == "grub") {
           grub = {
             enable = true;
@@ -84,10 +84,11 @@
       ];
 
       # Kernel configuration
-      kernelPackages = lib.mkIf config.unified.core.boot.kernel.latestKernel
+      kernelPackages =
+        lib.mkIf config.unified.core.boot.kernel.latestKernel
         pkgs.linuxPackages_latest;
-      
-      kernelParams = 
+
+      kernelParams =
         config.unified.core.boot.kernel.customParams
         ++ lib.optionals config.unified.core.boot.kernel.hardening [
           # Security hardening
@@ -103,7 +104,7 @@
           "mce=0"
           "page_poison=1"
           "vsyscall=none"
-          
+
           # Performance
           "mitigations=auto"
         ];
@@ -111,11 +112,11 @@
       # Initrd configuration
       initrd = {
         availableKernelModules = config.unified.core.boot.initrd.availableKernelModules;
-        
+
         luks.devices = lib.mkIf config.unified.core.boot.initrd.luks {
           # Placeholder for LUKS devices - to be configured per system
         };
-        
+
         systemd.enable = true; # Use systemd in initrd for better boot process
       };
 
@@ -146,11 +147,11 @@
         "vm.vfs_cache_pressure" = lib.mkDefault 50;
         "vm.dirty_ratio" = lib.mkDefault 15;
         "vm.dirty_background_ratio" = lib.mkDefault 5;
-        
+
         # Network performance
         "net.core.default_qdisc" = "fq";
         "net.ipv4.tcp_congestion_control" = "bbr";
-        
+
         # Security (basic level)
         "net.ipv4.conf.all.accept_redirects" = 0;
         "net.ipv4.conf.default.accept_redirects" = 0;
@@ -166,7 +167,7 @@
 
       # Console configuration
       consoleLogLevel = 3; # Reduce console spam
-      
+
       # Boot timeout
       timeout = 5;
     };
@@ -178,7 +179,7 @@
         runtimeTime = "20s";
         rebootTime = "30s";
       };
-      
+
       # Boot performance
       services = {
         # Faster boot

@@ -51,8 +51,9 @@
           (lib.mkIf (hardware != null) hardware)
 
           # Profile composition
-          (lib.mkMerge (map (profile: ../profiles/${profile}.nix) profiles))
-
+        ]
+        ++ (map (profile: ../profiles/${profile}.nix) profiles)
+        ++ [
           # Host-specific configuration
           {
             networking.hostName = hostname;

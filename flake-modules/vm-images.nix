@@ -54,7 +54,7 @@
             };
 
             # Allow passwordless sudo for convenience
-            security.sudo.wheelNeedsPassword = false;
+            security.sudo.wheelNeedsPassword = false; # pragma: allowlist secret
           }
         ];
       };

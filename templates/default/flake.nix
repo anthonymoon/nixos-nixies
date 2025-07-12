@@ -279,8 +279,8 @@
           ];
           boot.kernelModules = ["virtio_balloon" "virtio_console" "virtio_rng"];
 
-          # No firewall for VMs
-          networking.firewall.enable = false;
+          # No firewall for VMs (safe in VM environment)
+          networking.firewall.enable = false; # pragma: allowlist secret
 
           # Fast boot
           boot.loader.timeout = 1;

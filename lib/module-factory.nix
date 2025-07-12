@@ -9,13 +9,13 @@
     config,
     dependencies ? [],
     security ? {},
-  }: {
+  }: args @ {
     config,
     lib,
     pkgs,
     ...
   }: let
-    cfg = config.unified.${name};
+    cfg = args.config.unified.${name};
   in {
     meta = {
       inherit name description category;
@@ -65,7 +65,10 @@
 
     config = lib.mkIf cfg.enable (lib.mkMerge [
       # User-provided configuration
-      (config {inherit cfg config lib pkgs;})
+      (config {
+        inherit cfg lib pkgs;
+        config = args.config;
+      })
 
       # Security hardening if enabled
       (lib.mkIf cfg.security.enable (security cfg))
@@ -75,7 +78,7 @@
         assertions =
           map
           (dep: {
-            assertion = config.unified.${dep}.enable or false;
+            assertion = args.config.unified.${dep}.enable or false;
             message = "Module '${name}' requires '${dep}' to be enabled";
           })
           dependencies;
