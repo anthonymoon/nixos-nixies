@@ -1,0 +1,20 @@
+# Markdownlint configuration for NixOS Unified
+# See: https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
+
+# Disable problematic rules
+MD013: false  # Line length (too restrictive for code blocks)
+MD033: false  # HTML tags allowed (for badges, etc.)
+MD041: false  # First line in file should be a top level header
+
+# Configure specific rules
+MD024:
+  siblings_only: true  # Allow duplicate headers in different sections
+
+MD029:
+  style: "ordered"  # Use ordered list style
+
+MD046:
+  style: "fenced"  # Use fenced code blocks
+
+# Enable all other rules by default
+default: true

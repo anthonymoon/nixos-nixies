@@ -1,0 +1,440 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build: Workstation",
+      "type": "shell",
+      "command": "nix",
+      "args": [
+        "build",
+        ".#nixosConfigurations.workstation.config.system.build.toplevel",
+        "--print-build-logs"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Build workstation configuration"
+    },
+    {
+      "label": "Build: Server",
+      "type": "shell",
+      "command": "nix",
+      "args": [
+        "build",
+        ".#nixosConfigurations.server.config.system.build.toplevel",
+        "--print-build-logs"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Build server configuration"
+    },
+    {
+      "label": "Build: All Configurations",
+      "type": "shell",
+      "command": "just",
+      "args": ["build-all"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Build all configurations"
+    },
+    {
+      "label": "Validate: Comprehensive",
+      "type": "shell",
+      "command": "just",
+      "args": ["validate"],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Run comprehensive validation"
+    },
+    {
+      "label": "Validate: Syntax",
+      "type": "shell",
+      "command": "just",
+      "args": ["check-syntax"],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "silent",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false
+      },
+      "problemMatcher": [],
+      "detail": "Check Nix syntax"
+    },
+    {
+      "label": "Validate: Flake",
+      "type": "shell",
+      "command": "nix",
+      "args": ["flake", "check", "--no-build"],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "silent",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false
+      },
+      "problemMatcher": [],
+      "detail": "Validate flake structure"
+    },
+    {
+      "label": "Security: Audit",
+      "type": "shell",
+      "command": "just",
+      "args": ["security-audit"],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Run security audit"
+    },
+    {
+      "label": "Security: Secret Scan",
+      "type": "shell",
+      "command": "detect-secrets",
+      "args": ["scan", "--all-files", "--force-use-all-plugins"],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false
+      },
+      "problemMatcher": [],
+      "detail": "Scan for secrets"
+    },
+    {
+      "label": "Performance: Check",
+      "type": "shell",
+      "command": "just",
+      "args": ["performance-check"],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Run performance analysis"
+    },
+    {
+      "label": "Performance: Benchmark",
+      "type": "shell",
+      "command": "just",
+      "args": ["benchmark"],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Benchmark build times"
+    },
+    {
+      "label": "Format: All Code",
+      "type": "shell",
+      "command": "just",
+      "args": ["format"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "silent",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false
+      },
+      "problemMatcher": [],
+      "detail": "Format all code files"
+    },
+    {
+      "label": "Format: Nix Files",
+      "type": "shell",
+      "command": "alejandra",
+      "args": [".", "--quiet"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "silent",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false
+      },
+      "problemMatcher": [],
+      "detail": "Format Nix files with Alejandra"
+    },
+    {
+      "label": "Lint: All Code",
+      "type": "shell",
+      "command": "just",
+      "args": ["lint"],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false
+      },
+      "problemMatcher": [],
+      "detail": "Lint all code files"
+    },
+    {
+      "label": "Test: All Configurations",
+      "type": "shell",
+      "command": "just",
+      "args": ["test-configs"],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Test all configuration builds"
+    },
+    {
+      "label": "Test: Packages",
+      "type": "shell",
+      "command": "just",
+      "args": ["test-packages"],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false
+      },
+      "problemMatcher": [],
+      "detail": "Test package builds"
+    },
+    {
+      "label": "Test: All",
+      "type": "shell",
+      "command": "just",
+      "args": ["test-all"],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Run all tests"
+    },
+    {
+      "label": "Deploy: Workstation",
+      "type": "shell",
+      "command": "just",
+      "args": ["deploy", "workstation"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Deploy to workstation"
+    },
+    {
+      "label": "Clean: Build Artifacts",
+      "type": "shell",
+      "command": "just",
+      "args": ["clean"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "silent",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false
+      },
+      "problemMatcher": [],
+      "detail": "Clean build artifacts"
+    },
+    {
+      "label": "Clean: Deep Clean",
+      "type": "shell",
+      "command": "just",
+      "args": ["deep-clean"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false
+      },
+      "problemMatcher": [],
+      "detail": "Deep clean including Nix store"
+    },
+    {
+      "label": "Update: Dependencies",
+      "type": "shell",
+      "command": "just",
+      "args": ["update-deps"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false
+      },
+      "problemMatcher": [],
+      "detail": "Update flake inputs and dependencies"
+    },
+    {
+      "label": "Dev: Setup Environment",
+      "type": "shell",
+      "command": "just",
+      "args": ["setup"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Setup development environment"
+    },
+    {
+      "label": "Dev: Install Pre-commit Hooks",
+      "type": "shell",
+      "command": "just",
+      "args": ["install-hooks"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false
+      },
+      "problemMatcher": [],
+      "detail": "Install git pre-commit hooks"
+    },
+    {
+      "label": "Dev: Pre-commit All",
+      "type": "shell",
+      "command": "just",
+      "args": ["pre-commit"],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false
+      },
+      "problemMatcher": [],
+      "detail": "Run pre-commit hooks on all files"
+    },
+    {
+      "label": "Analysis: Flake Info",
+      "type": "shell",
+      "command": "just",
+      "args": ["info"],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false
+      },
+      "problemMatcher": [],
+      "detail": "Show flake information"
+    },
+    {
+      "label": "Analysis: Disk Usage",
+      "type": "shell",
+      "command": "just",
+      "args": ["disk-usage"],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false
+      },
+      "problemMatcher": [],
+      "detail": "Show Nix store disk usage"
+    },
+    {
+      "label": "Analysis: System Info",
+      "type": "shell",
+      "command": "just",
+      "args": ["system-info"],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false
+      },
+      "problemMatcher": [],
+      "detail": "Show system information"
+    }
+  ]
+}

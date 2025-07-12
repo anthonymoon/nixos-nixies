@@ -1,0 +1,208 @@
+{
+  "nix.enableLanguageServer": true,
+  "nix.serverPath": "nil",
+  "nix.serverSettings": {
+    "nil": {
+      "formatting": {
+        "command": ["alejandra"]
+      },
+      "nix": {
+        "flake": {
+          "autoArchive": true,
+          "autoEvalInputs": true
+        }
+      }
+    }
+  },
+  "files.associations": {
+    "*.nix": "nix",
+    "flake.lock": "json",
+    "justfile": "makefile",
+    ".secrets.baseline": "json"
+  },
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.organizeImports": "explicit"
+  },
+  "editor.rulers": [80, 120],
+  "editor.wordWrap": "wordWrapColumn",
+  "editor.wordWrapColumn": 120,
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+  "[nix]": {
+    "editor.defaultFormatter": "kamadorueda.alejandra",
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
+    "editor.wordWrap": "on",
+    "editor.quickSuggestions": {
+      "comments": "off",
+      "strings": "off",
+      "other": "off"
+    }
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml",
+    "editor.tabSize": 2
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[shellscript]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
+  },
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "flake.nix": "flake.lock",
+    "*.nix": "*.md",
+    "justfile": "Justfile",
+    "README.md": "LICENSE, CONTRIBUTING.md, CHANGELOG.md, .gitignore"
+  },
+  "files.exclude": {
+    "**/result": true,
+    "**/result-": true,
+    "**/.direnv": true,
+    "**/.pre-commit-cache": true
+  },
+  "files.watcherExclude": {
+    "**/result/**": true,
+    "**/result-/**": true,
+    "**/.direnv/**": true,
+    "**/nix/store/**": true
+  },
+  "search.exclude": {
+    "**/result": true,
+    "**/result-": true,
+    "**/.direnv": true,
+    "**/flake.lock": true,
+    "**/.pre-commit-cache": true
+  },
+  "git.enableSmartCommit": true,
+  "git.confirmSync": false,
+  "git.autofetch": true,
+  "git.rebaseWhenSync": true,
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "terminal.integrated.profiles.linux": {
+    "bash": {
+      "path": "bash",
+      "args": ["-l"]
+    },
+    "nix-develop": {
+      "path": "nix",
+      "args": ["develop", "--command", "bash"]
+    }
+  },
+  "terminal.integrated.env.linux": {
+    "NIX_CONFIG": "experimental-features = nix-command flakes"
+  },
+  "task.allowAutomaticTasks": "on",
+  "markdownlint.config": {
+    "extends": ".markdownlint.yaml"
+  },
+  "yaml.schemas": {
+    "https://json.schemastore.org/github-workflow.json": [
+      ".github/workflows/*.yml",
+      ".github/workflows/*.yaml"
+    ],
+    "https://json.schemastore.org/pre-commit-config.json": [
+      ".pre-commit-config.yaml"
+    ]
+  },
+  "errorLens.enabledDiagnosticLevels": [
+    "error",
+    "warning",
+    "info"
+  ],
+  "errorLens.excludeBySource": [
+    "cSpell"
+  ],
+  "cSpell.words": [
+    "alejandra",
+    "agenix",
+    "anyrun",
+    "apparmor",
+    "cachix",
+    "disko",
+    "flake",
+    "gamemode",
+    "greetd",
+    "hashedPassword",
+    "hyprland",
+    "hyprlock",
+    "libvirtd",
+    "lanzaboote",
+    "mangohud",
+    "mkSystem",
+    "nixos",
+    "nixpkgs",
+    "niri",
+    "pipewire",
+    "specialArgs",
+    "systemd",
+    "tuigreet",
+    "unfree",
+    "waybar",
+    "wheelNeedsPassword"
+  ],
+  "cSpell.ignorePaths": [
+    "**/flake.lock",
+    "**/result*",
+    "**/.direnv/**",
+    "**/.git/**"
+  ],
+  "gitlens.codeLens.enabled": false,
+  "gitlens.currentLine.enabled": false,
+  "gitlens.hovers.currentLine.over": "line",
+  "gitlens.statusBar.enabled": false,
+  "prettier.configPath": ".prettierrc",
+  "prettier.ignorePath": ".prettierignore",
+  "todo-tree.regex.regex": "((//|#|<!--|;|/\*|^)\\s*($TAGS)|^\\s*- \[ \])",
+  "todo-tree.general.tags": [
+    "TODO",
+    "FIXME",
+    "HACK",
+    "BUG",
+    "NOTE",
+    "XXX"
+  ],
+  "todo-tree.highlights.customHighlight": {
+    "TODO": {
+      "icon": "check",
+      "iconColour": "#ffcc00"
+    },
+    "FIXME": {
+      "icon": "bug",
+      "iconColour": "#ff6666"
+    },
+    "BUG": {
+      "icon": "bug",
+      "iconColour": "#ff0000"
+    },
+    "HACK": {
+      "icon": "alert",
+      "iconColour": "#ff9900"
+    }
+  },
+  "direnv.restart.automatic": true,
+  "workbench.colorCustomizations": {
+    "titleBar.activeBackground": "#2d3748",
+    "titleBar.activeForeground": "#ffffff",
+    "statusBar.background": "#2d3748",
+    "statusBar.foreground": "#ffffff"
+  },
+  "workbench.editor.labelFormat": "short",
+  "workbench.editor.untitled.hint": "hidden",
+  "extensions.ignoreRecommendations": false,
+  "telemetry.telemetryLevel": "off",
+  "security.workspace.trust.untrustedFiles": "prompt",
+  "security.workspace.trust.banner": "always",
+  "security.workspace.trust.startupPrompt": "always"
+}

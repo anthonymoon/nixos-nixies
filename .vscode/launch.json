@@ -1,0 +1,44 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug: Nix Build",
+      "type": "bashdb",
+      "request": "launch",
+      "program": "${workspaceFolder}/debug-build.sh",
+      "args": ["workstation"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "preLaunchTask": "Create Debug Script"
+    },
+    {
+      "name": "Debug: Security Audit",
+      "type": "bashdb",
+      "request": "launch",
+      "program": "${workspaceFolder}/result/bin/nixos-unified-security-audit",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "preLaunchTask": "Build: Security Audit"
+    },
+    {
+      "name": "Debug: Installation Script",
+      "type": "bashdb",
+      "request": "launch",
+      "program": "${workspaceFolder}/result/bin/nixos-unified-installer",
+      "args": ["--help"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "preLaunchTask": "Build: Installer"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Debug: Full Validation",
+      "configurations": [
+        "Debug: Nix Build",
+        "Debug: Security Audit"
+      ],
+      "stopAll": true
+    }
+  ]
+}

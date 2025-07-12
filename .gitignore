@@ -1,0 +1,72 @@
+# Nix build results
+result
+result-*
+
+# Direnv
+.direnv/
+
+# Development artifacts
+.pre-commit-cache/
+*.log
+
+# Editor files
+.vscode/settings.local.json
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+.tmp/
+.temp/
+
+# Logs
+logs/
+*.log
+
+# Secrets and credentials
+.secrets
+.env.local
+.env.secret
+
+# Build artifacts
+dist/
+build/
+target/
+
+# Cache directories
+.cache/
+.npm/
+.yarn/
+
+# IDE files
+.idea/
+*.iml
+
+# Backup files
+*.bak
+*.backup
+
+# Test artifacts
+test-results/
+coverage/
+
+# Documentation build
+docs/_build/
+docs/.doctrees/
+
+# VM artifacts
+*.qcow2
+*.vmdk
+*.vdi
+
+# ISO files
+*.iso
+
+# Hardware-specific generated files
+hardware-configuration.nix.bak

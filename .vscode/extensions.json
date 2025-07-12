@@ -1,0 +1,42 @@
+{
+  "recommendations": [
+    "jnoortheen.nix-ide",
+    "kamadorueda.alejandra",
+    "arrterian.nix-env-selector",
+    "redhat.vscode-yaml",
+    "ms-vscode.vscode-json",
+    "tamasfe.even-better-toml",
+    "DavidAnson.vscode-markdownlint",
+    "yzhang.markdown-all-in-one",
+    "shd101wyy.markdown-preview-enhanced",
+    "timonwong.shellcheck",
+    "foxundermoon.shell-format",
+    "mads-hartmann.bash-ide-vscode",
+    "eamodio.gitlens",
+    "mhutchie.git-graph",
+    "donjayamanne.githistory",
+    "usernamehw.errorlens",
+    "streetsidesoftware.code-spell-checker",
+    "esbenp.prettier-vscode",
+    "bradlc.vscode-tailwindcss",
+    "ms-vscode.vscode-task-buttons",
+    "formulahendry.terminal-task-runner",
+    "Gruntfuggly.todo-tree",
+    "alefragnani.Bookmarks",
+    "ms-vscode.vscode-file-utils",
+    "sleistner.vscode-fileutils",
+    "mkhl.direnv",
+    "ms-vscode-remote.remote-containers",
+    "yzhang.markdown-all-in-one",
+    "bierner.markdown-mermaid",
+    "Semgrep.semgrep",
+    "pflannery.vscode-versionlens",
+    "PKief.material-icon-theme",
+    "zhuangtongfa.Material-theme",
+    "GitHub.github-vscode-theme"
+  ],
+  "unwantedRecommendations": [
+    "ms-vscode.vscode-typescript-next",
+    "ms-vscode.js-debug-nightly"
+  ]
+}

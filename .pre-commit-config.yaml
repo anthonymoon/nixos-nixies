@@ -1,0 +1,239 @@
+# Pre-commit hooks for NixOS Unified
+# Install with: pre-commit install
+
+repos:
+  # Nix formatting and validation
+  - repo: local
+    hooks:
+      - id: alejandra
+        name: Nix formatting (alejandra)
+        description: Format Nix files with alejandra
+        entry: alejandra
+        language: system
+        files: '\.nix$' # Corrected: added missing single quote and dollar sign
+
+      # Nix syntax validation
+      - id: nix-syntax-check
+        name: Nix syntax validation
+        description: Check Nix syntax with nix-instantiate
+        entry: bash
+        args:
+          - -c
+          - |
+            set -euo pipefail
+            echo "🔍 Checking Nix syntax..."
+            failed=0
+            while IFS= read -r -d '' file; do
+              echo "  Checking: $file"
+              if ! nix-instantiate --parse "$file" > /dev/null 2>&1; then
+                echo "  ❌ Syntax error in $file"
+                nix-instantiate --parse "$file"
+                failed=1
+              fi
+            done < <(find . -name "*.nix" -type f -not -path "./result*" -print0)
+
+            if [ $failed -eq 1 ]; then
+              echo "❌ Nix syntax validation failed"
+              exit 1
+            fi
+            echo "✅ All Nix files have valid syntax"
+        language: system
+        files: '\.nix$'
+        pass_filenames: false
+
+      - id: flake-check
+        name: Flake validation
+        description: Validate flake structure and dependencies
+        entry: bash
+        args:
+          - -c
+          - |
+            set -euo pipefail
+            echo "📦 Validating flake..."
+            if ! nix flake check --no-build 2>&1; then
+              echo "❌ Flake validation failed"
+              exit 1
+            fi
+            echo "✅ Flake validation passed"
+        language: system
+        files: '^flake\.(nix|lock)$'
+        pass_filenames: false
+
+      - id: security-scan
+        name: Security validation
+        description: Scan for common security issues
+        entry: bash
+        args:
+          - -c
+          - |
+            set -euo pipefail
+            echo "🛡️  Running security checks..."
+            failed=0
+
+            # Check for disabled firewalls (excluding qemu profiles)
+            if grep -r "firewall\.enable.*false" . --include="*.nix" | grep -v -E "(qemu)" 2>/dev/null; then
+              echo "❌ CRITICAL: Disabled firewall found!"
+              failed=1
+            fi
+
+            # Check for root SSH login (excluding qemu profiles)
+            if grep -r "PermitRootLogin.*yes" . --include="*.nix" | grep -v -E "(qemu)" 2>/dev/null; then
+              echo "❌ CRITICAL: Root SSH login enabled!"
+              failed=1
+            fi
+
+            # Check for hardcoded passwords (exclude templates/examples/qemu)
+            if grep -r 'password.*=.*"[^"]*"' . --include="*.nix" | grep -v -E "(template|example|README|qemu)" 2>/dev/null; then
+              echo "❌ CRITICAL: Hardcoded passwords found!"
+              failed=1
+            fi
+
+            # Check for passwordless sudo (excluding qemu profiles)
+            if grep -r "wheelNeedsPassword.*false" . --include="*.nix" | grep -v -E "(qemu)" 2>/dev/null; then
+              echo "⚠️  WARNING: Passwordless sudo enabled"
+            fi
+
+            if [ $failed -eq 1 ]; then
+              echo "❌ Security scan failed"
+              exit 1
+            fi
+            echo "✅ Security scan passed"
+        language: system
+        files: '\.nix$'
+        pass_filenames: false
+
+      - id: performance-check
+        name: Performance validation
+        description: Check for performance anti-patterns
+        entry: bash
+        args:
+          - -c
+          - |
+            set -euo pipefail
+            echo "⚡ Checking performance patterns..."
+            warnings=0
+
+            # Check for large package lists
+            while IFS= read -r file; do
+              if [ -f "$file" ]; then
+                count=$(grep -c "pkgs\." "$file" 2>/dev/null || echo 0)
+                if [ "$count" -gt 50 ]; then
+                  echo "⚠️  Large package list in $file: $count packages"
+                  warnings=$((warnings + 1))
+                fi
+              fi
+            done < <(find . -name "*.nix" -type f -exec grep -l "environment\.systemPackages\|home\.packages" {} \;)
+
+            # Check for multiple 'with pkgs;' statements
+            with_pkgs_count=$(grep -r "with pkgs;" . --include="*.nix" 2>/dev/null | wc -l || echo 0)
+            if [ "$with_pkgs_count" -gt 15 ]; then
+              echo "⚠️  Many 'with pkgs;' statements ($with_pkgs_count) - consider package sets"
+              warnings=$((warnings + 1))
+            fi
+
+            echo "📊 Performance warnings: $warnings"
+            echo "✅ Performance check completed"
+        language: system
+        files: '\.nix$'
+        pass_filenames: false
+
+      - id: documentation-check
+        name: Documentation validation
+        description: Check documentation coverage and quality
+        entry: bash
+        args:
+          - -c
+          - |
+            set -euo pipefail
+            echo "📚 Checking documentation..."
+            missing=0
+
+            # Check for README files
+            if [ ! -f "README.md" ]; then
+              echo "⚠️  Missing root README.md"
+              missing=$((missing + 1))
+            fi
+
+            # Check for module documentation
+            find modules -mindepth 1 -maxdepth 1 -type d | while IFS= read -r module_dir; do
+              module_name=$(basename "$module_dir")
+              if [ ! -f "$module_dir/README.md" ] && [ ! -f "docs/modules/$module_name.md" ]; then
+                echo "⚠️  Missing documentation for module: $module_name"
+                missing=$((missing + 1))
+              fi
+            done
+
+            # Check for profile documentation
+            find profiles -name "*.nix" -type f | while IFS= read -r profile; do
+              profile_name=$(basename "$profile" .nix)
+              if ! grep -q "meta.*description" "$profile" 2>/dev/null; then
+                echo "⚠️  Profile $profile_name missing description"
+              fi
+            done
+
+            echo "📊 Documentation items needing attention: $missing"
+            echo "✅ Documentation check completed"
+        language: system
+        files: '\.(nix|md)$'
+        pass_filenames: false
+
+  # General code quality
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: '\.patch$'
+
+      - id: end-of-file-fixer
+        exclude: '\.patch$'
+
+      - id: check-yaml
+        args: [--allow-multiple-documents]
+
+      - id: check-json
+
+      - id: check-toml
+
+      - id: check-xml
+
+      - id: check-merge-conflict
+
+      - id: check-case-conflict
+
+      - id: mixed-line-ending
+        args: [--fix=lf]
+
+  # Shell script validation
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.9.0.6
+    hooks:
+      - id: shellcheck
+        args: [-e, SC1091, -e, SC2086, -e, SC2155]
+
+  # Markdown formatting
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.37.0
+    hooks:
+      - id: markdownlint
+        args: [--config, .markdownlint.yaml]
+
+  # Secrets detection
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.4.0
+    hooks:
+      - id: detect-secrets
+        args: [--baseline, .secrets.baseline]
+        exclude: '\.lock$'
+
+# Global configuration
+ci:
+  autofix_commit_msg: |
+    [pre-commit.ci] auto fixes from pre-commit hooks
+
+    for more information, see https://pre-commit.ci
+  autofix_prs: true
+  autoupdate_branch: ''
+  autoupdate_commit_msg: '[pre-commit.ci] pre-commit autoupdate'
+  autoupdate_schedule: weekly
+  skip: [nix-syntax-check, flake-check, security-scan, performance-check]
+  submodules: false
