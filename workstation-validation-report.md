@@ -1,10 +1,10 @@
 # Enterprise Workstation Validation Report
 
-**Generated:** 2025-07-11T16:53:06-07:00
+**Generated:** 2025-07-11T21:43:45-07:00
 **Profile:** enterprise-workstation
 **Total Tests:** 45
-**Failed Tests:** 35
-**Success Rate:** 22%
+**Failed Tests:** 34
+**Success Rate:** 24%
 
 ## Test Results
 
@@ -37,7 +37,7 @@
 - ✅ Compliance Framework: HIPAA framework covered
 - ✅ Compliance Framework: GDPR framework covered
 - ✅ Compliance Coverage: Major compliance frameworks covered
-- ❌ Workstation Build: Nix not available for build testing
+- ❌ Workstation Build: Enterprise workstation configuration build failed
 - ❌ User Experience: Missing UX feature: gnome.*extensions
 - ❌ User Experience: Missing UX feature: font.*configuration
 - ❌ User Experience: Missing UX feature: auto.*updates
@@ -52,11 +52,11 @@
 - ✅ Security Policies: No security policy violations found
 - ❌ Enterprise App: Missing enterprise application: firefox-esr
 - ❌ Enterprise Applications: 1 enterprise applications missing
-- ❌ Integration Tests: Module integration failed
+- ✅ Integration Tests: Module integration successful
 
 ## Summary
 
-❌ **35 tests failed.** Please review and fix the issues before deployment.
+❌ **34 tests failed.** Please review and fix the issues before deployment.
 
 ## Features Validated
 
@@ -96,7 +96,6 @@
 - Remote device management
 
 ### ✅ Development Tools
-
 - Visual Studio Code with extensions
 - Git version control with enterprise settings
 - Docker container support

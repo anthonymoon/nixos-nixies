@@ -1,10 +1,10 @@
 # Home Desktop Validation Report
 
-**Generated:** 2025-07-11T17:13:40-07:00
+**Generated:** 2025-07-11T21:43:45-07:00
 **Profile:** home-desktop (bleeding-edge gaming)
 **Total Tests:** 40
-**Failed Tests:** 22
-**Success Rate:** 45%
+**Failed Tests:** 21
+**Success Rate:** 47%
 
 ## Test Results
 
@@ -40,18 +40,18 @@
 - ❌ Desktop Environment: Desktop environment needs improvement
 - ✅ Security Considerations: No major security violations found
 - ✅ Package Ecosystem: All essential packages included
-- ❌ Home Desktop Build: Nix not available for build testing
+- ❌ Home Desktop Build: Home desktop configuration build failed
 - ✅ Systems Integration: home-desktop properly integrated in systems.nix
 - ❌ Systems Config: Missing systems.nix config: gaming.*enable
 - ❌ Systems Config: Missing systems.nix config: bleeding-edge.*enable
 - ❌ Systems Configuration: 2 systems configurations missing
 - ✅ Module Structure: All required modules present
-- ❌ Integration Tests: Module integration failed
+- ✅ Integration Tests: Module integration successful
 - ✅ Documentation: All modules properly documented
 
 ## Summary
 
-⚠️ **22 tests failed.** Please review and fix the issues before deployment.
+⚠️ **21 tests failed.** Please review and fix the issues before deployment.
 
 ## Features Validated
 
@@ -155,7 +155,6 @@ passwd gamer  # Set password for gaming user
 5. **Build Failures**: Update Nix channels and clear build cache
 
 ### Performance Tuning
-
 1. **CPU Governor**: Verify performance governor is active
 2. **Memory**: Monitor usage and adjust ZRAM if needed
 3. **Storage**: Check I/O scheduler and read-ahead settings
