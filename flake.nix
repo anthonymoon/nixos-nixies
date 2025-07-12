@@ -59,8 +59,6 @@
         # Shared modules for all configurations
         nixosModules = import ./modules;
 
-        # Profiles for common use cases
-        profiles = import ./profiles;
 
         # Templates for new configurations
         templates = import ./templates;
