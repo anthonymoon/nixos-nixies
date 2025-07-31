@@ -451,4 +451,4 @@ python3 /etc/deployment/scripts/health_check.py
 
 ---
 
-*This documentation is maintained as part of the nixos-unified enterprise configuration. Last updated: 2025-01-11*
+*This documentation is maintained as part of the nixos-nixies enterprise configuration. Last updated: 2025-01-11*

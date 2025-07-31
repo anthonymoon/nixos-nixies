@@ -5,9 +5,9 @@
   inputs,
   ...
 }: let
-  unified-lib = import ../../lib {inherit inputs lib;};
+  nixies-lib = import ../../lib {inherit inputs lib;};
 in
-  (unified-lib.mkUnifiedModule {
+  (nixies-lib.mkNixiesModule {
     name = "bleeding-edge";
     description = "Bleeding-edge package management and experimental features for home desktops";
     category = "system";

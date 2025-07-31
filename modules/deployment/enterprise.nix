@@ -5,9 +5,9 @@
   inputs,
   ...
 }: let
-  unified-lib = import ../../lib {inherit inputs lib;};
+  nixies-lib = import ../../lib {inherit inputs lib;};
 in
-  (unified-lib.mkUnifiedModule {
+  (nixies-lib.mkNixiesModule {
     name = "enterprise-deployment";
     description = "Enterprise deployment automation, orchestration, and infrastructure management";
     category = "deployment";
@@ -154,7 +154,7 @@ in
             hosts: enterprise_servers
             become: yes
             vars:
-            nixos_config_repo: "https://github.com/enterprise/nixos-unified.git"
+            nixos_config_repo: "https://github.com/enterprise/nixos-nixies.git"
             deployment_user: "deployment"
             backup_retention_days: 30
             tasks:

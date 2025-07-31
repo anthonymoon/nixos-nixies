@@ -4,9 +4,9 @@
   pkgs,
   ...
 }: let
-  cfg = config.unified.core.security;
+  cfg = config.nixies.core.security;
 in {
-  options.unified.core.security = with lib; {
+  options.nixies.core.security = with lib; {
     enable = mkEnableOption "core security hardening" // {default = true;};
     level = mkOption {
       type = types.enum ["basic" "standard" "hardened" "paranoid"];

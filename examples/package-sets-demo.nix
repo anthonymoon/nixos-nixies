@@ -7,7 +7,7 @@
   imports = [
     ../modules/packages
   ];
-  unified.packages = {
+  nixies.packages = {
     enable = true;
     sets.core = {
       enable = true;
@@ -58,7 +58,7 @@
       parallel-evaluation = true;
     };
   };
-  unified.packages.sets = {
+  nixies.packages.sets = {
     core = {
       development = {
         git = {

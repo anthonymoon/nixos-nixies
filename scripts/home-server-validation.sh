@@ -188,7 +188,7 @@ main() {
 
     # Test systems integration
     print_test "Systems Integration"
-    test_file_contains "flake-modules/systems.nix" "home-server.*unified-lib.mkSystem" "Home server system defined"
+    test_file_contains "flake-modules/systems.nix" "home-server.*nixies-lib.mkSystem" "Home server system defined"
     test_file_contains "flake-modules/systems.nix" "hostname.*home-server" "Hostname configured"
     test_file_contains "flake-modules/systems.nix" "profiles.*home-server" "Profile reference configured"
     test_file_contains "flake-modules/systems.nix" "homeserver.*isNormalUser" "Server user configured"
@@ -248,7 +248,7 @@ main() {
 
 # Check if running from correct directory
 if [ ! -f "flake.nix" ]; then
-    echo -e "${RED}Error: Please run this script from the nixos-unified root directory${NC}"
+    echo -e "${RED}Error: Please run this script from the nixos-nixies root directory${NC}"
     exit 1
 fi
 

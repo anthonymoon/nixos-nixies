@@ -4,8 +4,8 @@
   pkgs,
   ...
 }: {
-  options.unified.core.system = with lib; {
-    enable = mkEnableOption "unified system configuration" // {default = true;};
+  options.nixies.core.system = with lib; {
+    enable = mkEnableOption "nixies system configuration" // {default = true;};
     locale = {
       defaultLocale = mkOption {
         type = types.str;
@@ -100,24 +100,24 @@
       powerProfiles = mkEnableOption "power profiles daemon";
     };
   };
-  config = lib.mkIf config.unified.core.system.enable {
+  config = lib.mkIf config.nixies.core.system.enable {
     i18n = {
-      defaultLocale = config.unified.core.system.locale.defaultLocale;
-      supportedLocales = config.unified.core.system.locale.supportedLocales;
+      defaultLocale = config.nixies.core.system.locale.defaultLocale;
+      supportedLocales = config.nixies.core.system.locale.supportedLocales;
     };
-    time.timeZone = lib.mkIf (!config.services.localtimed.enable) config.unified.core.system.locale.timeZone;
+    time.timeZone = lib.mkIf (!config.services.localtimed.enable) config.nixies.core.system.locale.timeZone;
     console = {
-      keyMap = lib.mkDefault config.unified.core.system.keyboard.layout;
+      keyMap = lib.mkDefault config.nixies.core.system.keyboard.layout;
       font = "Lat2-Terminus16";
       useXkbConfig = true;
     };
     services = {
       xserver.xkb = {
-        layout = config.unified.core.system.keyboard.layout;
-        options = config.unified.core.system.keyboard.options;
+        layout = config.nixies.core.system.keyboard.layout;
+        options = config.nixies.core.system.keyboard.options;
       };
-      pipewire = lib.mkIf (config.unified.core.system.audio.enable
-        && config.unified.core.system.audio.backend == "pipewire") {
+      pipewire = lib.mkIf (config.nixies.core.system.audio.enable
+        && config.nixies.core.system.audio.backend == "pipewire") {
         enable = true;
         audio.enable = true;
         pulse.enable = true;
@@ -135,8 +135,8 @@
           };
         };
       };
-      pulseaudio = lib.mkIf (config.unified.core.system.audio.enable
-        && config.unified.core.system.audio.backend == "pulseaudio") {
+      pulseaudio = lib.mkIf (config.nixies.core.system.audio.enable
+        && config.nixies.core.system.audio.backend == "pulseaudio") {
         enable = true;
         support32Bit = true;
         tcp = {
@@ -145,9 +145,9 @@
         };
         extraModules = [pkgs.pulseaudio-modules-bt];
       };
-      printing = lib.mkIf config.unified.core.system.printing.enable {
+      printing = lib.mkIf config.nixies.core.system.printing.enable {
         enable = true;
-        drivers = config.unified.core.system.printing.drivers;
+        drivers = config.nixies.core.system.printing.drivers;
         extraConf = ''
           DefaultEncryption Never
           DefaultAuthType Basic
@@ -156,8 +156,8 @@
         '';
         webInterface = false;
       };
-      saned.enable = config.unified.core.system.printing.enable;
-      blueman.enable = config.unified.core.system.bluetooth;
+      saned.enable = config.nixies.core.system.printing.enable;
+      blueman.enable = config.nixies.core.system.bluetooth;
       smartd = {
         enable = true;
         autodetect = true;
@@ -184,11 +184,11 @@
         ];
       };
       localtimed.enable = true;
-      power-profiles-daemon.enable = config.unified.core.system.power.powerProfiles;
+      power-profiles-daemon.enable = config.nixies.core.system.power.powerProfiles;
       thermald.enable = lib.mkDefault true;
     };
     hardware = {
-      bluetooth = lib.mkIf config.unified.core.system.bluetooth {
+      bluetooth = lib.mkIf config.nixies.core.system.bluetooth {
         enable = true;
         powerOnBoot = true;
         settings = {
@@ -203,25 +203,25 @@
         enable32Bit = lib.mkDefault true;
       };
       sane = {
-        enable = config.unified.core.system.printing.enable;
+        enable = config.nixies.core.system.printing.enable;
         extraBackends = with pkgs; [sane-airscan];
       };
     };
-    powerManagement = lib.mkIf config.unified.core.system.power.management {
+    powerManagement = lib.mkIf config.nixies.core.system.power.management {
       enable = true;
-      cpuFreqGovernor = config.unified.core.system.power.cpuGovernor;
+      cpuFreqGovernor = config.nixies.core.system.power.cpuGovernor;
       powertop.enable = true;
       resumeCommands = ''
         ${pkgs.systemd}/bin/systemctl restart --no-block user@*
       '';
     };
-    zramSwap = lib.mkIf config.unified.core.system.zram.enable {
+    zramSwap = lib.mkIf config.nixies.core.system.zram.enable {
       enable = true;
-      algorithm = config.unified.core.system.zram.algorithm;
-      memoryPercent = config.unified.core.system.zram.memoryPercent;
+      algorithm = config.nixies.core.system.zram.algorithm;
+      memoryPercent = config.nixies.core.system.zram.memoryPercent;
     };
-    fonts = lib.mkIf config.unified.core.system.fonts.enable {
-      packages = config.unified.core.system.fonts.packages;
+    fonts = lib.mkIf config.nixies.core.system.fonts.enable {
+      packages = config.nixies.core.system.fonts.packages;
       fontconfig = {
         enable = true;
         antialias = true;
@@ -261,21 +261,21 @@
         atop
         sysstat
       ]
-      ++ lib.optionals config.unified.core.system.audio.enable [
+      ++ lib.optionals config.nixies.core.system.audio.enable [
         pavucontrol
         alsa-utils
         pulseaudio-ctl
       ]
-      ++ lib.optionals config.unified.core.system.printing.enable [
+      ++ lib.optionals config.nixies.core.system.printing.enable [
         cups
         system-config-printer
       ]
-      ++ lib.optionals config.unified.core.system.bluetooth [
+      ++ lib.optionals config.nixies.core.system.bluetooth [
         bluez
         bluez-tools
       ];
     security = {
-      rtkit.enable = config.unified.core.system.audio.enable;
+      rtkit.enable = config.nixies.core.system.audio.enable;
       polkit.enable = true;
     };
     systemd = {
@@ -290,7 +290,7 @@
         };
       };
       user.services = {
-        powerManagement = lib.mkIf config.unified.core.system.power.management {
+        powerManagement = lib.mkIf config.nixies.core.system.power.management {
           enable = true;
           description = "User power management";
         };
@@ -306,7 +306,7 @@
         "snd-aloop"
         "snd-dummy"
       ]
-      ++ lib.optionals config.unified.core.system.bluetooth [
+      ++ lib.optionals config.nixies.core.system.bluetooth [
         "btusb"
         "bluetooth"
       ];
@@ -314,7 +314,7 @@
       [
         "snd_hda_intel.power_save=1"
       ]
-      ++ lib.optionals config.unified.core.system.zram.enable [
+      ++ lib.optionals config.nixies.core.system.zram.enable [
         "zswap.enabled=0"
       ];
   };

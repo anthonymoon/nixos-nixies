@@ -84,7 +84,7 @@
     assertions =
       map
       (dep: {
-        assertion = config.unified.${dep}.enable or false;
+        assertion = config.nixies.${dep}.enable or false;
         message = "Module '${moduleName}' requires module '${dep}' to be enabled";
       })
       dependencies;
@@ -114,7 +114,7 @@
       {
         assertion =
           !(config.networking.firewall.enable or true)
-          -> lib.elem "development" (config.unified.profiles or []);
+          -> lib.elem "development" (config.nixies.profiles or []);
         message = "Firewall should only be disabled in development environments";
       }
     ];

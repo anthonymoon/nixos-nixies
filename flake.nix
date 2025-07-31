@@ -1,5 +1,5 @@
 {
-  description = "Unified Modular NixOS Configuration Framework";
+  description = "NixOS Nixies Configuration Framework";
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-24.11";
@@ -84,14 +84,14 @@
             nix-du
           ];
           shellHook = ''
-            echo "🏗️  Unified NixOS Development Environment"
+            echo "🏗️  NixOS Nixies Development Environment"
             echo "📦 Available commands:"
             echo "  nix run .
             echo "  nix run .
             echo "  nix run .
             echo "  nix run .
             echo ""
-            echo "💡 For more help, see: https://github.com/nixos-unified/docs"
+            echo "💡 For more help, see: https://github.com/amoon/nixos-nixies"
           '';
         };
         formatter = pkgs.alejandra;

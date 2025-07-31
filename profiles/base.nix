@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: {
-  unified.core = {
+  nixies.core = {
     enable = true;
     security = {
       enable = true;

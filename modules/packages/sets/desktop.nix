@@ -5,9 +5,9 @@
   inputs,
   ...
 }: let
-  unified-lib = import ../../../lib {inherit inputs lib;};
+  nixies-lib = import ../../../lib {inherit inputs lib;};
 in
-  (unified-lib.mkUnifiedModule {
+  (nixies-lib.mkUnifiedModule {
     name = "packages-desktop";
     description = "Desktop environment packages including window managers, display managers, and desktop utilities";
     category = "packages";

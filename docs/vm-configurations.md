@@ -225,10 +225,10 @@ nix build .#vm-launcher-desktop --dry-run
 
 ### Main Framework
 
-- **Unified Library**: Uses shared `mkSystem` function
-- **Module System**: Integrates with unified module architecture
+- **Nixies Library**: Uses shared `mkSystem` function
+- **Module System**: Integrates with nixies module architecture
 - **Profiles**: Based on QEMU-optimized profile
-- **Security**: Follows unified security framework
+- **Security**: Follows nixies security framework
 
 ### CI/CD Integration
 

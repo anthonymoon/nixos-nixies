@@ -4,8 +4,8 @@
   pkgs,
   ...
 }: {
-  options.unified.core.nix = with lib; {
-    enable = mkEnableOption "unified Nix configuration" // {default = true;};
+  options.nixies.core.nix = with lib; {
+    enable = mkEnableOption "nixies Nix configuration" // {default = true;};
     flakes = mkEnableOption "enable Nix flakes" // {default = true;};
     autoUpgrade = {
       enable = mkEnableOption "automatic system upgrades";
@@ -48,17 +48,17 @@
       description = "Users trusted to use Nix daemon";
     };
   };
-  config = lib.mkIf config.unified.core.nix.enable {
+  config = lib.mkIf config.nixies.core.nix.enable {
     nix = {
       package = pkgs.nixVersions.stable;
       settings = {
-        experimental-features = lib.mkIf config.unified.core.nix.flakes [
+        experimental-features = lib.mkIf config.nixies.core.nix.flakes [
           "nix-command"
           "flakes"
         ];
         max-jobs = "auto";
         cores = 0;
-        trusted-users = config.unified.core.nix.trustedUsers;
+        trusted-users = config.nixies.core.nix.trustedUsers;
         substituters = [
           "https://cache.nixos.org/"
         ];
@@ -66,7 +66,7 @@
           "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
         ];
         sandbox = true;
-        auto-optimise-store = config.unified.core.nix.optimization.autoOptimise;
+        auto-optimise-store = config.nixies.core.nix.optimization.autoOptimise;
         keep-going = true;
         log-lines = 50;
         connect-timeout = 10;
@@ -79,15 +79,15 @@
           "git+https://gitlab.com/"
         ];
       };
-      buildMachines = config.unified.core.nix.buildMachines;
-      distributedBuilds = config.unified.core.nix.buildMachines != [];
-      gc = lib.mkIf config.unified.core.nix.garbageCollection.enable {
+      buildMachines = config.nixies.core.nix.buildMachines;
+      distributedBuilds = config.nixies.core.nix.buildMachines != [];
+      gc = lib.mkIf config.nixies.core.nix.garbageCollection.enable {
         automatic = true;
-        dates = config.unified.core.nix.garbageCollection.schedule;
-        options = "--delete-older-than ${toString config.unified.core.nix.garbageCollection.keepDays}d";
+        dates = config.nixies.core.nix.garbageCollection.schedule;
+        options = "--delete-older-than ${toString config.nixies.core.nix.garbageCollection.keepDays}d";
         randomizedDelaySec = "1800";
       };
-      optimise = lib.mkIf config.unified.core.nix.optimization.enable {
+      optimise = lib.mkIf config.nixies.core.nix.optimization.enable {
         automatic = true;
         dates = ["weekly"];
       };
@@ -130,10 +130,10 @@
         })
       ];
     };
-    system.autoUpgrade = lib.mkIf config.unified.core.nix.autoUpgrade.enable {
+    system.autoUpgrade = lib.mkIf config.nixies.core.nix.autoUpgrade.enable {
       enable = true;
-      channel = "https://nixos.org/channels/${config.unified.core.nix.autoUpgrade.channel}";
-      dates = config.unified.core.nix.autoUpgrade.schedule;
+      channel = "https://nixos.org/channels/${config.nixies.core.nix.autoUpgrade.channel}";
+      dates = config.nixies.core.nix.autoUpgrade.schedule;
       allowReboot = lib.mkDefault false;
       randomizedDelaySec = "3600";
     };

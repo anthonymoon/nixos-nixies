@@ -4,8 +4,8 @@
   pkgs,
   ...
 }: {
-  options.unified.core.boot = with lib; {
-    enable = mkEnableOption "unified boot configuration" // {default = true;};
+  options.nixies.core.boot = with lib; {
+    enable = mkEnableOption "nixies boot configuration" // {default = true;};
     loader = mkOption {
       type = types.enum ["systemd-boot" "grub"];
       default = "systemd-boot";
@@ -43,10 +43,10 @@
     };
     tmpOnTmpfs = mkEnableOption "mount /tmp on tmpfs" // {default = true;};
   };
-  config = lib.mkIf config.unified.core.boot.enable {
+  config = lib.mkIf config.nixies.core.boot.enable {
     boot = {
       loader = lib.mkMerge [
-        (lib.mkIf (config.unified.core.boot.loader == "systemd-boot") {
+        (lib.mkIf (config.nixies.core.boot.loader == "systemd-boot") {
           systemd-boot = {
             enable = true;
             configurationLimit = 10;
@@ -55,23 +55,23 @@
           efi.canTouchEfiVariables = true;
           timeout = 5;
         })
-        (lib.mkIf (config.unified.core.boot.loader == "grub") {
+        (lib.mkIf (config.nixies.core.boot.loader == "grub") {
           grub = {
             enable = true;
             device = "nodev";
             efiSupport = true;
-            enableCryptodisk = config.unified.core.boot.initrd.luks;
+            enableCryptodisk = config.nixies.core.boot.initrd.luks;
           };
           efi.canTouchEfiVariables = true;
           timeout = 5;
         })
       ];
       kernelPackages =
-        lib.mkIf config.unified.core.boot.kernel.latestKernel
+        lib.mkIf config.nixies.core.boot.kernel.latestKernel
         pkgs.linuxPackages_latest;
       kernelParams =
-        config.unified.core.boot.kernel.customParams
-        ++ lib.optionals config.unified.core.boot.kernel.hardening [
+        config.nixies.core.boot.kernel.customParams
+        ++ lib.optionals config.nixies.core.boot.kernel.hardening [
           "slub_debug=FZP"
           "init_on_alloc=1"
           "init_on_free=1"
@@ -87,17 +87,17 @@
           "mitigations=auto"
         ];
       initrd = {
-        availableKernelModules = config.unified.core.boot.initrd.availableKernelModules;
+        availableKernelModules = config.nixies.core.boot.initrd.availableKernelModules;
         luks.devices =
-          lib.mkIf config.unified.core.boot.initrd.luks {
+          lib.mkIf config.nixies.core.boot.initrd.luks {
           };
         systemd.enable = true;
       };
-      plymouth = lib.mkIf config.unified.core.boot.plymouth {
+      plymouth = lib.mkIf config.nixies.core.boot.plymouth {
         enable = true;
         theme = "breeze";
       };
-      tmp = lib.mkIf config.unified.core.boot.tmpOnTmpfs {
+      tmp = lib.mkIf config.nixies.core.boot.tmpOnTmpfs {
         useTmpfs = true;
         tmpfsSize = "50%";
         cleanOnBoot = true;

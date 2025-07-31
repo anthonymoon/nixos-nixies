@@ -1,7 +1,7 @@
 {lib}: {
   #
   #
-  mkUnifiedModule = {
+  mkNixiesModule = {
     name,
     description,
     category ? "general",
@@ -16,14 +16,14 @@
     pkgs,
     ...
   }: let
-    cfg = args.config.unified.${name};
+    cfg = args.config.nixies.${name};
   in {
     meta = {
       inherit name description category;
-      maintainers = ["nixos-unified"];
+      maintainers = ["nixos-nixies"];
       doc = ./docs + "/${name}.md";
     };
-    options.unified.${name} =
+    options.nixies.${name} =
       {
         enable =
           lib.mkEnableOption description
@@ -66,13 +66,13 @@
         assertions =
           map
           (dep: {
-            assertion = args.config.unified.${dep}.enable or false;
+            assertion = args.config.nixies.${dep}.enable or false;
             message = ''
               Module '${name}' requires dependency '${dep}' to be enabled.
               To fix this, add the following to your configuration:
-              unified.${dep}.enable = true;
+              nixies.${dep}.enable = true;
               Or disable module '${name}' by setting:
-              unified.${name}.enable = false;
+              nixies.${name}.enable = false;
             '';
           })
           dependencies;
@@ -93,9 +93,9 @@
     pkgs,
     ...
   }: let
-    cfg = config.unified.features.${name};
+    cfg = config.nixies.features.${name};
   in {
-    options.unified.features.${name} = {
+    options.nixies.features.${name} = {
       enable = lib.mkEnableOption description;
     };
     config = lib.mkIf cfg.enable (lib.mkMerge [
@@ -123,9 +123,9 @@
     pkgs,
     ...
   }: let
-    cfg = config.unified.services.${name};
+    cfg = config.nixies.services.${name};
   in {
-    options.unified.services.${name} = {
+    options.nixies.services.${name} = {
       enable = lib.mkEnableOption description;
       port = lib.mkOption {
         type = lib.types.port;

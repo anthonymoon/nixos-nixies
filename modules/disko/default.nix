@@ -4,9 +4,9 @@
   pkgs,
   ...
 }: let
-  cfg = config.unified.disko;
+  cfg = config.nixies.disko;
 in {
-  options.unified.disko = {
+  options.nixies.disko = {
     enable = lib.mkEnableOption "disko disk management";
 
     layout = lib.mkOption {

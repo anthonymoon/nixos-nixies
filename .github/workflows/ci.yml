@@ -42,7 +42,7 @@ jobs:
       - name: 🗃️ Setup Cachix
         uses: cachix/cachix-action@v14
         with:
-          name: nixos-unified
+          name: nixos-nixies
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
           extraPullNames: nix-community
 
@@ -144,7 +144,7 @@ jobs:
       - name: 🗃️ Setup Cachix
         uses: cachix/cachix-action@v14
         with:
-          name: nixos-unified
+          name: nixos-nixies
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
           extraPullNames: nix-community
 
@@ -185,7 +185,7 @@ jobs:
       - name: 🗃️ Setup Cachix
         uses: cachix/cachix-action@v14
         with:
-          name: nixos-unified
+          name: nixos-nixies
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
           extraPullNames: nix-community
 
@@ -232,7 +232,7 @@ jobs:
       - name: 🗃️ Setup Cachix
         uses: cachix/cachix-action@v14
         with:
-          name: nixos-unified
+          name: nixos-nixies
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
           extraPullNames: nix-community
 
@@ -276,7 +276,7 @@ jobs:
       - name: 🗃️ Setup Cachix
         uses: cachix/cachix-action@v14
         with:
-          name: nixos-unified
+          name: nixos-nixies
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
           extraPullNames: nix-community
 
@@ -319,7 +319,7 @@ jobs:
       - name: 🗃️ Setup Cachix
         uses: cachix/cachix-action@v14
         with:
-          name: nixos-unified
+          name: nixos-nixies
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
           extraPullNames: nix-community
 

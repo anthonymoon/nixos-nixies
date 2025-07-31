@@ -5,9 +5,9 @@
   inputs,
   ...
 }: let
-  unified-lib = import ../../lib {inherit inputs lib;};
+  nixies-lib = import ../../lib {inherit inputs lib;};
 in
-  (unified-lib.mkUnifiedModule {
+  (nixies-lib.mkUnifiedModule {
     name = "enterprise-monitoring";
     description = "Enterprise-grade monitoring, logging, and observability stack";
     category = "monitoring";

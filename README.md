@@ -1,4 +1,4 @@
-# 🏗️ NixOS Unified
+# 🏗️ NixOS Nixies
 
 **A modular, secure, and performance-optimized NixOS configuration framework**
 
@@ -10,7 +10,7 @@
 
 ## 🎯 **Overview**
 
-NixOS Unified is an enterprise-grade, modular configuration framework that eliminates code duplication, enforces security best practices, and provides performance-optimized deployments across diverse environments.
+NixOS Nixies is a modular configuration framework for personal systems with performance-optimized deployments.
 
 ### **Key Benefits**
 
@@ -25,9 +25,9 @@ NixOS Unified is an enterprise-grade, modular configuration framework that elimi
 ## 🏛️ **Architecture**
 
 ```
-nixos-unified/
+nixos-nixies/
 ├── 📚 lib/                    # Shared Libraries & Factories
-├── 🧩 modules/                # Unified Component Library
+├── 🧩 modules/                # Component Library
 ├── 📋 profiles/               # Composed System Profiles
 ├── 🖥️ configurations/         # Reference Implementations
 ├── 🚀 deployment/             # Deploy-rs Framework
@@ -49,8 +49,8 @@ nixos-unified/
 ### 1. Create New Configuration
 
 ```bash
-# Use the unified template
-nix flake new -t github:user/nixos-unified#default my-config
+# Use the nixies template
+nix flake new -t github:amoon/nixos-nixies#default my-config
 cd my-config
 
 # Available templates:
@@ -84,12 +84,12 @@ deploy .#your-host
 
 ---
 
-## 🧩 **Unified Modules**
+## 🧩 **Nixies Modules**
 
 ### **Core Foundation**
 
 ```nix
-unified.core = {
+nixies.core = {
   enable = true;
   security.level = "standard";  # basic | standard | hardened | paranoid
   performance.enable = true;
@@ -99,7 +99,7 @@ unified.core = {
 ### **Desktop Environment**
 
 ```nix
-unified.niri = {
+nixies.niri = {
   enable = true;
   session.displayManager = "greetd";
   features = {
@@ -113,7 +113,7 @@ unified.niri = {
 ### **Gaming Optimizations**
 
 ```nix
-unified.gaming = {
+nixies.gaming = {
   enable = true;
   steam.enable = true;
   performance.gamemode = true;
@@ -124,7 +124,7 @@ unified.gaming = {
 ### **Development Environment**
 
 ```nix
-unified.development = {
+nixies.development = {
   enable = true;
   languages = {
     nix = true;
@@ -301,8 +301,8 @@ nix build .#checks.x86_64-linux.build-all-configs
 
 ```bash
 # Clone repository
-git clone https://github.com/user/nixos-unified
-cd nixos-unified
+git clone https://github.com/amoon/nixos-nixies
+cd nixos-nixies
 
 # Enter development environment
 nix develop
@@ -354,9 +354,9 @@ nix run .#validate
 ### **Support**
 
 - 📖 [Documentation](./docs/)
-- 🐛 [Issue Tracker](https://github.com/user/nixos-unified/issues)
-- 💬 [Discussions](https://github.com/user/nixos-unified/discussions)
-- 📧 [Matrix Chat](https://matrix.to/#/#nixos-unified:matrix.org)
+- 🐛 [Issue Tracker](https://github.com/amoon/nixos-nixies/issues)
+- 💬 [Discussions](https://github.com/amoon/nixos-nixies/discussions)
+- 📧 [Matrix Chat](https://matrix.to/#/#nixos-nixies:matrix.org)
 
 ### **Contributing**
 
@@ -369,13 +369,13 @@ nix run .#validate
 
 ## 📄 **License**
 
-NixOS Unified is licensed under the [MIT License](./LICENSE).
+NixOS Nixies is licensed under the [MIT License](./LICENSE).
 
 ---
 
-## 🌟 **Why NixOS Unified?**
+## 🌟 **Why NixOS Nixies?**
 
-| Feature | Traditional NixOS | NixOS Unified |
+| Feature | Traditional NixOS | NixOS Nixies |
 |---------|------------------|---------------|
 | **Code Reuse** | 40% duplication | 85% shared components |
 | **Security** | Manual hardening | Built-in security levels |
@@ -393,6 +393,6 @@ NixOS Unified is licensed under the [MIT License](./LICENSE).
 
 ---
 
-**Transform your NixOS infrastructure with unified, modular, and secure configurations.**
+**Transform your NixOS infrastructure with modular and secure configurations.**
 
-*Get started today: `nix flake new -t github:user/nixos-unified my-config`*
+*Get started today: `nix flake new -t github:amoon/nixos-nixies my-config`*

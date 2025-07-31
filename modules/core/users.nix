@@ -4,8 +4,8 @@
   pkgs,
   ...
 }: {
-  options.unified.core.users = with lib; {
-    enable = mkEnableOption "unified user management" // {default = true;};
+  options.nixies.core.users = with lib; {
+    enable = mkEnableOption "nixies user management" // {default = true;};
     defaultUser = {
       enable = mkEnableOption "create default user account";
       name = mkOption {
@@ -79,16 +79,16 @@
       };
     };
   };
-  config = lib.mkIf config.unified.core.users.enable {
+  config = lib.mkIf config.nixies.core.users.enable {
     users = {
       mutableUsers = lib.mkOverride 1500 true;
       users = lib.mkMerge [
-        (lib.mkIf config.unified.core.users.defaultUser.enable {
-          ${config.unified.core.users.defaultUser.name} = {
+        (lib.mkIf config.nixies.core.users.defaultUser.enable {
+          ${config.nixies.core.users.defaultUser.name} = {
             isNormalUser = true;
-            home = config.unified.core.users.defaultUser.homeDirectory;
-            shell = config.unified.core.users.defaultUser.shell;
-            extraGroups = config.unified.core.users.defaultUser.extraGroups;
+            home = config.nixies.core.users.defaultUser.homeDirectory;
+            shell = config.nixies.core.users.defaultUser.shell;
+            extraGroups = config.nixies.core.users.defaultUser.extraGroups;
             description = "Default system user";
           };
         })
@@ -113,7 +113,7 @@
         enable = true;
         wheelNeedsPassword = lib.mkDefault true;
         extraConfig = ''
-          Defaults timestamp_timeout=${toString config.unified.core.users.security.sudoTimeout}
+          Defaults timestamp_timeout=${toString config.nixies.core.users.security.sudoTimeout}
           Defaults lecture=never
           Defaults pwfeedback
         '';
@@ -135,7 +135,7 @@
       };
       pam = {
         services = {
-          passwd.limits = lib.mkIf config.unified.core.users.security.passwordPolicy [
+          passwd.limits = lib.mkIf config.nixies.core.users.security.passwordPolicy [
             {
               domain = "*";
               type = "hard";
@@ -147,22 +147,22 @@
       };
       loginDefs.settings = {
         FAIL_DELAY = 3;
-        LOGIN_RETRIES = config.unified.core.users.security.maxLoginTries;
+        LOGIN_RETRIES = config.nixies.core.users.security.maxLoginTries;
         LOGIN_TIMEOUT = 60;
         UMASK = "077";
       };
       protectKernelImage = lib.mkDefault true;
     };
-    services.openssh = lib.mkIf config.unified.core.users.ssh.enableForUsers {
+    services.openssh = lib.mkIf config.nixies.core.users.ssh.enableForUsers {
       enable = true;
       settings = {
-        PasswordAuthentication = !config.unified.core.users.ssh.keyBasedOnly;
+        PasswordAuthentication = !config.nixies.core.users.ssh.keyBasedOnly;
         PermitRootLogin = "no";
         PubkeyAuthentication = true;
-        AuthenticationMethods = lib.mkIf config.unified.core.users.ssh.keyBasedOnly "publickey";
+        AuthenticationMethods = lib.mkIf config.nixies.core.users.ssh.keyBasedOnly "publickey";
         ClientAliveInterval = 300;
         ClientAliveCountMax = 2;
-        MaxAuthTries = config.unified.core.users.security.maxLoginTries;
+        MaxAuthTries = config.nixies.core.users.security.maxLoginTries;
         MaxSessions = 4;
         Protocol = 2;
         X11Forwarding = false;
@@ -170,8 +170,8 @@
         AllowAgentForwarding = "no";
         PermitTunnel = "no";
         AllowUsers =
-          lib.mkIf (config.unified.core.users.ssh.allowedUsers != [])
-          config.unified.core.users.ssh.allowedUsers;
+          lib.mkIf (config.nixies.core.users.ssh.allowedUsers != [])
+          config.nixies.core.users.ssh.allowedUsers;
       };
       extraConfig = ''
         KexAlgorithms curve25519-sha256@libssh.org,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512
@@ -237,7 +237,7 @@
         LESS = "-R";
       };
     };
-    users.defaultUserShell = config.unified.core.users.defaultUser.shell;
+    users.defaultUserShell = config.nixies.core.users.defaultUser.shell;
     xdg = {
       autostart.enable = true;
       icons.enable = true;

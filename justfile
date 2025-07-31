@@ -1,4 +1,4 @@
-# NixOS Unified - Development Task Runner
+# NixOS Nixies - Development Task Runner
 # Install just: nix-env -iA nixpkgs.just
 # Usage: just <command>
 
@@ -10,7 +10,7 @@ default:
 
 # Initialize development environment
 setup:
-    @echo "🏗️  Setting up NixOS Unified development environment..."
+    @echo "🏗️  Setting up NixOS Nixies development environment..."
     @echo "📦 Installing pre-commit hooks..."
     pre-commit install
     @echo "🔧 Setting up git configuration..."
@@ -273,10 +273,10 @@ new-module name:
     @echo '{ config, lib, pkgs, ... }:' > "modules/{{name}}/default.nix"
     @echo '' >> "modules/{{name}}/default.nix"
     @echo 'let' >> "modules/{{name}}/default.nix"
-    @echo '  unified-lib = config.unified-lib or (import ../../lib { inherit inputs lib; });' >> "modules/{{name}}/default.nix"
+    @echo '  nixies-lib = config.nixies-lib or (import ../../lib { inherit inputs lib; });' >> "modules/{{name}}/default.nix"
     @echo 'in' >> "modules/{{name}}/default.nix"
     @echo '' >> "modules/{{name}}/default.nix"
-    @echo 'unified-lib.mkUnifiedModule {' >> "modules/{{name}}/default.nix"
+    @echo 'nixies-lib.mkNixiesModule {' >> "modules/{{name}}/default.nix"
     @echo '  name = "{{name}}";' >> "modules/{{name}}/default.nix"
     @echo '  description = "{{name}} functionality";' >> "modules/{{name}}/default.nix"
     @echo '  category = "general";' >> "modules/{{name}}/default.nix"

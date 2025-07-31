@@ -5,9 +5,9 @@
   inputs,
   ...
 }: let
-  unified-lib = import ../../../lib {inherit inputs lib;};
+  nixies-lib = import ../../../lib {inherit inputs lib;};
 in
-  (unified-lib.mkUnifiedModule {
+  (nixies-lib.mkUnifiedModule {
     name = "packages-multimedia";
     description = "Multimedia production and playback packages for audio, video, and content creation";
     category = "packages";

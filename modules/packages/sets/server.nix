@@ -5,9 +5,9 @@
   inputs,
   ...
 }: let
-  unified-lib = import ../../../lib {inherit inputs lib;};
+  nixies-lib = import ../../../lib {inherit inputs lib;};
 in
-  (unified-lib.mkUnifiedModule {
+  (nixies-lib.mkUnifiedModule {
     name = "packages-server";
     description = "Server applications and services for hosting, virtualization, and network services";
     category = "packages";

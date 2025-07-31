@@ -11,9 +11,9 @@
     ./security.nix
     ./system.nix
   ];
-  options.unified.core = with lib; {
+  options.nixies.core = with lib; {
     enable =
-      mkEnableOption "unified core functionality"
+      mkEnableOption "nixies core functionality"
       // {
         default = true;
       };
@@ -47,9 +47,9 @@
       };
     };
   };
-  config = lib.mkIf config.unified.core.enable {
-    networking.hostName = config.unified.core.hostname;
-    system.stateVersion = config.unified.core.stateVersion;
+  config = lib.mkIf config.nixies.core.enable {
+    networking.hostName = config.nixies.core.hostname;
+    system.stateVersion = config.nixies.core.stateVersion;
     networking.firewall.enable = lib.mkDefault true;
     security.sudo.wheelNeedsPassword = lib.mkDefault true;
     boot.tmp.cleanOnBoot = lib.mkDefault true;

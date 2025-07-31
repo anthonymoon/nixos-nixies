@@ -1,6 +1,6 @@
 {pkgs ? import <nixpkgs> {}}:
 pkgs.mkShell {
-  name = "nixos-unified-dev";
+  name = "nixos-nixies-dev";
   buildInputs = with pkgs; [
     nix
     nixpkgs-fmt
@@ -36,7 +36,7 @@ pkgs.mkShell {
     just
   ];
   shellHook = ''
-    echo "🏗️  NixOS Unified Development Environment"
+    echo "🏗️  NixOS Nixies Development Environment"
     echo "======================================="
     echo ""
     echo "📦 Available tools:"
@@ -87,7 +87,7 @@ pkgs.mkShell {
     fi
     echo ""
     echo "📚 Documentation: ./README.md"
-    echo "🐛 Issues: https://github.com/user/nixos-unified/issues"
+    echo "🐛 Issues: https://github.com/amoon/nixos-nixies/issues"
     echo ""
   '';
   NIX_CONFIG = "experimental-features = nix-command flakes";

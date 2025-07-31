@@ -69,8 +69,8 @@
   nixpkgs.config.allowUnfree = true;
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
-  # Basic unified configuration
-  unified = {
+  # Basic nixies configuration
+  nixies = {
     core = {
       enable = true;
       security.level = "standard";
@@ -115,6 +115,7 @@
     msecli         # Official Micron CLI (unfree)
     nvme-cli       # Open-source NVMe management
     smartmontools  # SMART monitoring
+    zfs            # ZFS utilities
     
     # Gaming tools
     mangohud # FPS overlay
@@ -193,10 +194,14 @@
     "net.ifnames=1"
     "biosdevname=0"
     
+    # AMD Ryzen 5600X optimizations
+    "processor.max_cstate=1"  # Disable deep C-states for lower latency
+    "idle=poll"  # Maximum performance (increases power usage)
+    "threadirqs"  # Better interrupt handling for Ryzen
+    
     # General optimizations
     "nowatchdog"
     "nmi_watchdog=0"
-    "threadirqs"
     "preempt=voluntary"
     "transparent_hugepage=always"
     
@@ -235,9 +240,9 @@
     "net.ipv4.tcp_rmem" = "4096 87380 268435456";
     "net.ipv4.tcp_wmem" = "4096 65536 268435456";
     "net.core.netdev_max_backlog" = 50000;
-    "net.ipv4.tcp_congestion_control" = "bbr";
+    "net.ipv4.tcp_congestion_control" = lib.mkForce "bbr";
     "net.ipv4.tcp_mtu_probing" = 1;
-    "net.core.default_qdisc" = "fq";
+    "net.core.default_qdisc" = lib.mkForce "fq";
     "net.ipv4.tcp_slow_start_after_idle" = 0;
     "net.ipv4.tcp_no_metrics_save" = 1;
     "net.ipv4.tcp_timestamps" = 0;
@@ -250,18 +255,19 @@
     "net.core.busy_poll" = 50;
     "net.core.busy_read" = 50;
     
-    # IRQ and CPU optimizations
+    # AMD Ryzen optimizations
     "kernel.sched_migration_cost_ns" = 5000000;
-    "kernel.sched_autogroup_enabled" = 0;
-    
-    # VM and memory optimizations for 32GB RAM with SSD
-    "vm.min_free_kbytes" = 1048576; # 1GB
-    "vm.swappiness" = 10;
-    "vm.dirty_ratio" = 15;
-    "vm.dirty_background_ratio" = 5;
-    "vm.vfs_cache_pressure" = 100;
+    "kernel.sched_autogroup_enabled" = 1;  # Better for desktop responsiveness
     "vm.zone_reclaim_mode" = 0;
-    "vm.max_map_count" = 2147483642;
+    "vm.watermark_scale_factor" = 200;
+    
+    # ZFS-optimized memory management for 32GB RAM
+    "vm.min_free_kbytes" = 2097152;  # 2GB minimum free for ZFS
+    "vm.swappiness" = 1;  # Minimal swapping with ZFS
+    "vm.dirty_ratio" = 10;  # Lower for ZFS
+    "vm.dirty_background_ratio" = 5;
+    "vm.vfs_cache_pressure" = 50;  # Prefer ZFS ARC over VFS cache
+    "vm.max_map_count" = lib.mkForce 2147483642;
     
     # SSD optimizations
     "vm.page-cluster" = 0; # Disable swap readahead for SSDs
@@ -290,20 +296,25 @@
   
   # ZFS module parameters
   boot.extraModprobeConfig = ''
-    # ZFS ARC size: 8-16GB for 32GB system
-    options zfs zfs_arc_min=8589934592
-    options zfs zfs_arc_max=17179869184
+    # Optimize ZFS for NVMe with 32GB RAM
+    options zfs zfs_arc_max=17179869184  # 16GB ARC max (50% of RAM)
+    options zfs zfs_arc_min=8589934592   # 8GB ARC min (25% of RAM)
+    options zfs zfs_arc_meta_limit_percent=75
+    options zfs zfs_arc_dnode_limit_percent=40
+    options zfs zfs_txg_timeout=5        # Faster transaction groups
+    options zfs zfs_vdev_async_write_active_max_dirty_percent=60
+    options zfs zfs_vdev_sync_write_max_active=16  # Increased for Ryzen 5600X
+    options zfs zfs_vdev_sync_read_max_active=16
+    options zfs zfs_vdev_async_read_max_active=16
+    options zfs zfs_vdev_async_write_max_active=16
     options zfs zfs_prefetch_disable=0
-    options zfs zfs_txg_timeout=5
+    options zfs l2arc_write_boost=33554432   # 32MB for better NVMe utilization
+    options zfs l2arc_write_max=33554432
     options zfs l2arc_noprefetch=0
-    options zfs l2arc_write_max=134217728
-    options zfs zfs_vdev_async_read_max_active=8
-    options zfs zfs_vdev_async_write_max_active=8
-    options zfs zfs_vdev_scrub_max_active=3
-    options zfs zfs_vdev_sync_read_min_active=10
-    options zfs zfs_vdev_sync_read_max_active=30
-    options zfs zfs_vdev_sync_write_min_active=10
-    options zfs zfs_vdev_sync_write_max_active=30
+    options zfs l2arc_headroom=8
+    options zfs zfs_compressed_arc_enabled=1
+    options zfs zfs_abd_scatter_enabled=1
+    options zfs zfs_vdev_cache_size=16777216  # 16MB vdev cache
     
     # Intel X710 driver options for 20Gbps
     options i40e max_vfs=0
@@ -344,8 +355,13 @@
   services.zfs = {
     autoScrub.enable = true;
     autoScrub.interval = "weekly";
-    trim.enable = true;
+    trim.enable = true;  # Enable TRIM for ZFS pools
   };
+  
+  # I/O scheduler - none for NVMe with ZFS
+  services.udev.extraRules = ''
+    ACTION=="add|change", KERNEL=="nvme[0-9]*n[0-9]*", ATTR{queue/scheduler}="none"
+  '';
 
   # Enable ZFS dedup on nix store dataset
   systemd.services.zfs-enable-dedup = {
@@ -434,11 +450,11 @@
   # SMART monitoring for NVMe with conservative temperature warnings
   services.smartd = {
     enable = true;
-    autodetect = false;
+    autodetect = lib.mkForce false;
     
     devices = [{
       device = "/dev/nvme0n1";
-      options = "-W 4,65,70";  # Warn at 65°C, critical at 70°C
+      options = "-a -o on -W 4,65,70";  # All attributes, offline testing, temperature warnings
     }];
   };
   

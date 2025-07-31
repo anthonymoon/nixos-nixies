@@ -6,7 +6,7 @@
   flake.nixosConfigurations = let
     lib = inputs.nixpkgs.lib;
     system = "x86_64-linux";
-    unified-lib = import ../lib {
+    nixies-lib = import ../lib {
       inherit inputs;
       inherit (inputs.nixpkgs) lib;
     };
@@ -16,13 +16,13 @@
       inputs.disko.nixosModules.disko
     ];
     commonConfig = {
-      _module.args.unified-lib = unified-lib;
+      _module.args.nixies-lib = nixies-lib;
       home-manager = {
         useGlobalPkgs = true;
         useUserPackages = true;
         extraSpecialArgs = {
           inherit inputs;
-          unified-lib = unified-lib;
+          nixies-lib = nixies-lib;
         };
         users = {};
       };
@@ -30,7 +30,7 @@
       nixpkgs.config.allowUnfree = true;
     };
   in {
-    nixies = unified-lib.mkSystem {
+    nixies = nixies-lib.mkSystem {
       hostname = "nixies";
       inherit system;
       profiles = ["base"];

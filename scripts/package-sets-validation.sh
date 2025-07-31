@@ -114,7 +114,7 @@ test_package_set_structure() {
     test_file_exists "$file" "$set_name package set file"
 
     # Test basic structure
-    test_file_contains "$file" "unified-lib.mkUnifiedModule" "$set_name uses unified module structure"
+    test_file_contains "$file" "nixies-lib.mkUnifiedModule" "$set_name uses unified module structure"
     test_file_contains "$file" "packages-$set_name" "$set_name has correct module name"
     test_file_contains "$file" "options.*with lib" "$set_name defines options"
     test_file_contains "$file" "config.*lib.mkIf.*enable" "$set_name has conditional config"
@@ -214,7 +214,7 @@ main() {
 
     # Test integration and advanced features
     print_test "Package Set Integration"
-    test_file_contains "modules/packages/default.nix" "unified.packages" "Integration with unified system"
+    test_file_contains "modules/packages/default.nix" "nixies.packages" "Integration with unified system"
     test_file_contains "modules/packages/default.nix" "nixpkgs.config" "Package configuration management"
     test_file_contains "modules/packages/default.nix" "packageOverrides" "Package override system"
     test_file_contains "modules/packages/default.nix" "validatePackageSets" "Package validation system"
@@ -302,7 +302,7 @@ main() {
 
 # Check if running from correct directory
 if [ ! -f "flake.nix" ]; then
-    echo -e "${RED}Error: Please run this script from the nixos-unified root directory${NC}"
+    echo -e "${RED}Error: Please run this script from the nixos-nixies root directory${NC}"
     exit 1
 fi
 

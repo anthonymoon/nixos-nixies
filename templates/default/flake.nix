@@ -1,5 +1,5 @@
 {
-  description = "NixOS Unified Configuration Template";
+  description = "NixOS Nixies Configuration Template";
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -7,7 +7,7 @@
       url = "github:nix-community/home-manager/release-24.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nixos-unified = {
+    nixos-nixies = {
       url = "path:../..";
       inputs.nixpkgs.follows = "nixpkgs";
     };
@@ -21,12 +21,12 @@
     nixpkgs,
     nixpkgs-unstable,
     home-manager,
-    nixos-unified,
+    nixos-nixies,
     deploy-rs,
     ...
   }: let
     system = "x86_64-linux";
-    sharedSSHKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIA898oqxREsBRW49hvI92CPWTebvwPoUeMSq5VMyzoM3 amoon@nixos-unified";
+    sharedSSHKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIA898oqxREsBRW49hvI92CPWTebvwPoUeMSq5VMyzoM3 amoon@nixos-nixies";
     mkUser = name: isNormalUser: extraGroups: {
       ${name} = {
         inherit isNormalUser extraGroups;
@@ -36,12 +36,12 @@
       };
     };
     baseConfig = {
-      nixos-unified = nixos-unified.lib;
+      nixos-nixies = nixos-nixies.lib;
       imports = [
-        nixos-unified.nixosModules.core
+        nixos-nixies.nixosModules.core
         home-manager.nixosModules.home-manager
       ];
-      unified.core = {
+      nixies.core = {
         enable = true;
         stateVersion = "24.11";
         security = {
@@ -107,7 +107,7 @@
       modules = [
         baseConfig
         {
-          unified.core.security.level = "hardened";
+          nixies.core.security.level = "hardened";
           nixpkgs.config.allowUnfree = false;
           services.greetd = {
             enable = true;
@@ -190,7 +190,7 @@
       modules = [
         baseConfig
         {
-          unified.core.security.level = "basic";
+          nixies.core.security.level = "basic";
           services.qemuGuest.enable = true;
           services.spice-vdagentd.enable = true;
           boot.initrd.availableKernelModules = [
@@ -264,7 +264,7 @@
         git
       ];
       shellHook = ''
-        echo "🏗️  NixOS Unified Template Development Environment"
+        echo "🏗️  NixOS Nixies Template Development Environment"
         echo ""
         echo "Available commands:"
         echo "  nixos-rebuild switch --flake .

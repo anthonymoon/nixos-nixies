@@ -5,9 +5,9 @@
   inputs,
   ...
 }: let
-  unified-lib = import ../../lib {inherit inputs lib;};
+  nixies-lib = import ../../lib {inherit inputs lib;};
 in
-  (unified-lib.mkUnifiedModule {
+  (nixies-lib.mkUnifiedModule {
     name = "gaming-advanced";
     description = "Advanced gaming features including VR, RGB peripherals, and cutting-edge gaming technologies";
     category = "entertainment";

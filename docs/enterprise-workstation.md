@@ -712,4 +712,4 @@ update-ca-certificates
 
 ---
 
-*This documentation is maintained as part of the nixos-unified enterprise workstation configuration. Last updated: 2025-01-11*
+*This documentation is maintained as part of the nixos-nixies enterprise workstation configuration. Last updated: 2025-01-11*

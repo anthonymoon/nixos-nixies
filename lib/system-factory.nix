@@ -43,7 +43,7 @@
         ++ (map (profile: ../profiles/${profile}.nix) profiles)
         ++ [
           {
-            unified.core.hostname = hostname;
+            nixies.core.hostname = hostname;
             system.stateVersion = lib.mkDefault "24.11";
             users.users = users;
           }

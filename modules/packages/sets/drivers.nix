@@ -5,9 +5,9 @@
   inputs,
   ...
 }: let
-  unified-lib = import ../../../lib {inherit inputs lib;};
+  nixies-lib = import ../../../lib {inherit inputs lib;};
 in
-  (unified-lib.mkUnifiedModule {
+  (nixies-lib.mkUnifiedModule {
     name = "packages-drivers";
     description = "Graphics drivers and hardware acceleration packages for optimal performance";
     category = "packages";

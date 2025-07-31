@@ -9,7 +9,7 @@
   security = import ./security.nix {inherit lib;};
 in {
   inherit (systemFactory) mkSystem mkProfile mkSpecialization;
-  inherit (moduleFactory) mkUnifiedModule mkFeatureModule mkServiceModule;
+  inherit (moduleFactory) mkNixiesModule mkFeatureModule mkServiceModule;
   inherit (validation) validateConfig validateSecurity validatePerformance;
   inherit (performance) optimizePackages lazyEvaluation parallelBuild;
   inherit (security) hardenSystem enableSecurityFeatures auditConfiguration;

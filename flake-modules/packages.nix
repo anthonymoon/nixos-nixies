@@ -12,7 +12,7 @@
     ...
   }: {
     packages = {
-      installer = pkgs.writeShellScriptBin "nixos-unified-installer" ''
+      installer = pkgs.writeShellScriptBin "nixos-nixies-installer" ''
         set -euo pipefail
         RED='\033[0;31m'
         GREEN='\033[0;32m'
@@ -32,7 +32,7 @@
         echo -e "''${RED}[ERROR]''${NC} $1"
         }
         show_usage() {
-        echo "NixOS Unified Installer"
+        echo "NixOS Nixies Installer"
         echo ""
         echo "Usage: $0 <profile> <hostname> [disk]"
         echo ""
@@ -112,10 +112,10 @@
         {
         inputs = {
         nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
-        nixos-unified.url = "github:user/nixos-unified";
+        nixos-nixies.url = "github:amoon/nixos-nixies";
         };
-        outputs = { nixpkgs, nixos-unified, ... }: {
-        nixosConfigurations.$hostname = nixos-unified.lib.mkSystem {
+        outputs = { nixpkgs, nixos-nixies, ... }: {
+        nixosConfigurations.$hostname = nixos-nixies.lib.mkSystem {
         hostname = "$hostname";
         profiles = [ "$profile" ];
         modules = [
@@ -134,7 +134,7 @@
         print_info "3. Configure SSH keys"
         print_info "4. Customize configuration in /etc/nixos/flake.nix"
       '';
-      security-audit = pkgs.writeShellScriptBin "nixos-unified-security-audit" ''
+      security-audit = pkgs.writeShellScriptBin "nixos-nixies-security-audit" ''
         set -euo pipefail
         echo "🛡️  NixOS Unified Security Audit"
         echo "==============================="
@@ -203,7 +203,7 @@
         exit 1
         fi
       '';
-      performance-benchmark = pkgs.writeShellScriptBin "nixos-unified-benchmark" ''
+      performance-benchmark = pkgs.writeShellScriptBin "nixos-nixies-benchmark" ''
         set -euo pipefail
         echo "⚡ NixOS Unified Performance Benchmark"
         echo "====================================="
@@ -258,7 +258,7 @@
         echo "  Memory efficiency: High usage"
         fi
       '';
-      migration-helper = pkgs.writeShellScriptBin "nixos-unified-migrate" ''
+      migration-helper = pkgs.writeShellScriptBin "nixos-nixies-migrate" ''
         set -euo pipefail
         echo "🔄 NixOS Unified Migration Helper"
         echo "================================"

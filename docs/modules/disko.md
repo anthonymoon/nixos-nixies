@@ -12,7 +12,7 @@ This module integrates [disko](https://github.com/nix-community/disko) to replac
 
 ```nix
 {
-  unified.disko = {
+  nixies.disko = {
     enable = true;
     layout = "standard";  # or "encrypted", "zfs", "btrfs"
     device = "/dev/disk/by-id/nvme-CT2000T500SSD8_241047B9A4C2";
@@ -66,7 +66,7 @@ When installing a new system with disko:
 ### Encrypted System
 ```nix
 {
-  unified.disko = {
+  nixies.disko = {
     enable = true;
     layout = "encrypted";
     device = "/dev/disk/by-id/nvme-YourDisk";
@@ -78,7 +78,7 @@ When installing a new system with disko:
 ### ZFS System
 ```nix
 {
-  unified.disko = {
+  nixies.disko = {
     enable = true;
     layout = "zfs";
     device = "/dev/disk/by-id/nvme-YourDisk";
@@ -94,7 +94,7 @@ When installing a new system with disko:
 ### Btrfs with Snapshots
 ```nix
 {
-  unified.disko = {
+  nixies.disko = {
     enable = true;
     layout = "btrfs";
     device = "/dev/disk/by-id/nvme-YourDisk";

@@ -1,4 +1,4 @@
-# NixOS Unified Template
+# NixOS Nixies Template
 
 This template provides a complete NixOS configuration based on your specific requirements.
 
@@ -21,7 +21,7 @@ This template provides a complete NixOS configuration based on your specific req
 
 ```bash
 # Use this template
-nix flake new -t github:user/nixos-unified#default my-nixos-config
+nix flake new -t github:amoon/nixos-nixies#default my-nixos-config
 cd my-nixos-config
 
 # Update the SSH key in flake.nix
@@ -300,7 +300,7 @@ passwd root
 - Disable password auth after setting up SSH keys:
 
 ```nix
-unified.core.security.ssh.passwordAuth = false;
+nixies.core.security.ssh.passwordAuth = false;
 ```
 
 ### Firewall
@@ -311,4 +311,4 @@ unified.core.security.ssh.passwordAuth = false;
 
 ## License
 
-This template is provided under the same license as NixOS Unified.
+This template is provided under the same license as NixOS Nixies.
