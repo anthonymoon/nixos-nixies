@@ -7,6 +7,7 @@
 }: {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
+    ../disko/nixies.nix
   ];
 
   # Hardware configuration based on nixos-generate-config output
@@ -14,6 +15,13 @@
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-amd" ];
   boot.extraModulePackages = [ ];
+
+  # Boot loader configuration
+  boot.loader = {
+    systemd-boot.enable = true;
+    efi.canTouchEfiVariables = true;
+    timeout = lib.mkForce 3;
+  };
 
   # Network interfaces detected by hardware scan
   networking = {
