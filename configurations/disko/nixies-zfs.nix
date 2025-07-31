@@ -5,7 +5,7 @@
     disk = {
       main = {
         type = "disk";
-        device = "/dev/disk/by-id/nvme-Sabrent_7D96071617E900002640";
+        device = "/dev/disk/by-id/nvme-CT2000T500SSD8_241047B9A4C2";
         content = {
           type = "gpt";
           partitions = {
