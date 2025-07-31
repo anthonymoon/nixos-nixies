@@ -1,11 +1,13 @@
 # QEMU VM Configurations
 
 ## Overview
+
 Complete QEMU-optimized VM configurations for testing, development, and desktop use cases.
 
 ## Available Configurations
 
 ### 1. Minimal VM (`qemu-minimal`)
+
 - **Purpose**: Lightweight testing and server environments
 - **Resources**: 1GB RAM, 4GB disk
 - **Features**:
@@ -16,6 +18,7 @@ Complete QEMU-optimized VM configurations for testing, development, and desktop 
   - Minimal package set
 
 ### 2. Desktop VM (`qemu-desktop`)
+
 - **Purpose**: Desktop environment testing with GUI
 - **Resources**: 4GB RAM, 12GB disk
 - **Features**:
@@ -26,6 +29,7 @@ Complete QEMU-optimized VM configurations for testing, development, and desktop 
   - Graphics acceleration support
 
 ### 3. Development VM (`qemu-development`)
+
 - **Purpose**: Full development environment
 - **Resources**: 8GB RAM, 16GB disk
 - **Features**:
@@ -39,6 +43,7 @@ Complete QEMU-optimized VM configurations for testing, development, and desktop 
 ## VM Management Tools
 
 ### Building VM Images
+
 ```bash
 # Build specific VM image
 nix build .#vm-image-minimal
@@ -50,6 +55,7 @@ nix build .#vm-image-{minimal,desktop,development}
 ```
 
 ### Launching VMs
+
 ```bash
 # Launch VMs directly
 nix run .#vm-launcher-minimal
@@ -63,6 +69,7 @@ nix run .#vm-manager -- launch development
 ```
 
 ### VM Manager Commands
+
 ```bash
 # VM management operations
 vm-manager build <type>        # Build VM image
@@ -74,6 +81,7 @@ vm-manager ssh <type>         # SSH into running VM
 ```
 
 ### Testing Framework
+
 ```bash
 # Run comprehensive VM tests
 nix run .#vm-test-runner
@@ -86,12 +94,14 @@ nix build .#vm-launcher-desktop --dry-run
 ## Performance Optimizations
 
 ### Kernel Optimizations
+
 - **I/O Scheduler**: `noop` for VM environments
 - **CPU States**: Disabled deep sleep states for responsiveness
 - **Memory Management**: Optimized swappiness and dirty ratios
 - **Network**: BBR congestion control, optimized buffer sizes
 
 ### VirtIO Drivers
+
 - **Storage**: `virtio_blk` and `virtio_scsi` for high-performance I/O
 - **Network**: `virtio_net` with optimized buffers
 - **Graphics**: `virtio_gpu` for accelerated rendering
@@ -99,6 +109,7 @@ nix build .#vm-launcher-desktop --dry-run
 - **Memory**: `virtio_balloon` for dynamic memory management
 
 ### System Optimizations
+
 - **Boot Time**: Fast initrd with zstd compression
 - **File Systems**: `noatime` and `nodiratime` for reduced I/O
 - **Logging**: Reduced log retention for VM environments
@@ -107,6 +118,7 @@ nix build .#vm-launcher-desktop --dry-run
 ## Security Configuration
 
 ### VM-Appropriate Security
+
 - **Firewall**: Disabled for development flexibility
 - **SSH**: Password authentication enabled for convenience
 - **Sudo**: Passwordless for wheel group members
@@ -114,6 +126,7 @@ nix build .#vm-launcher-desktop --dry-run
 - **Users**: Simple passwords for easy access
 
 ### Host-Guest Security
+
 - **File Sharing**: 9p filesystem for secure data exchange
 - **Network**: Port forwarding for specific services
 - **Isolation**: VM-contained environment with limited host access
@@ -121,11 +134,13 @@ nix build .#vm-launcher-desktop --dry-run
 ## Network Configuration
 
 ### systemd-networkd
+
 - **DHCP**: Automatic network configuration
 - **DNS**: CloudFlare and pool.ntp.org for time sync
 - **Performance**: Optimized buffer sizes and TCP settings
 
 ### Port Forwarding
+
 - **SSH**: Host port 2222 → VM port 22
 - **Development**: Ports 3000, 8000, 8080, 8443 forwarded
 - **Services**: Database ports (5432, 6379) available
@@ -133,6 +148,7 @@ nix build .#vm-launcher-desktop --dry-run
 ## Development Features
 
 ### Language Support
+
 - **Rust**: Complete toolchain with rust-analyzer
 - **Go**: Latest Go version with gopls LSP
 - **Python**: Python 3.11 with development tools
@@ -140,6 +156,7 @@ nix build .#vm-launcher-desktop --dry-run
 - **Nix**: nil LSP and alejandra formatter
 
 ### Development Tools
+
 - **Editors**: VS Code, Vim, Neovim, Emacs
 - **Containers**: Docker, Podman, Docker Compose
 - **Cloud**: AWS CLI, Google Cloud SDK, Azure CLI, kubectl
@@ -147,6 +164,7 @@ nix build .#vm-launcher-desktop --dry-run
 - **Databases**: PostgreSQL, Redis, SQLite, DBeaver
 
 ### Services
+
 - **PostgreSQL**: Pre-configured database server
 - **Redis**: Key-value store for development
 - **Docker**: Container runtime with optimization
@@ -155,22 +173,26 @@ nix build .#vm-launcher-desktop --dry-run
 ## File System Layout
 
 ### Standard Mounts
+
 - **Root**: `/` on `virtio_blk` with ext4
 - **Boot**: `/boot` on VFAT for UEFI support
 - **Tmp**: `/tmp` on tmpfs for performance
 
 ### Development VM Additions
+
 - **Shared**: `/mnt/shared` via 9p for host-guest file sharing
 - **Large tmpfs**: 4GB `/tmp` for development builds
 
 ## User Configuration
 
 ### Default Users
+
 - **Minimal**: `nixos` user with basic permissions
 - **Desktop**: `nixos` user with desktop group memberships
 - **Development**: `dev` and `nixos` users with full development access
 
 ### Permissions
+
 - **Wheel**: Sudo access without password
 - **Docker**: Container management access
 - **Audio/Video**: Multimedia device access
@@ -179,18 +201,21 @@ nix build .#vm-launcher-desktop --dry-run
 ## Quality Assurance
 
 ### Automated Testing
+
 - **Build Tests**: All VM images build successfully
 - **Launcher Tests**: VM launcher scripts validate
 - **Manager Tests**: VM management tool functionality
 - **Syntax**: All Nix files pass syntax validation
 
 ### Performance Validation
+
 - **Boot Time**: Optimized for fast VM startup
 - **Memory**: Efficient memory usage patterns
 - **I/O**: High-performance storage operations
 - **Network**: Optimized network throughput
 
 ### Security Validation
+
 - **Services**: Only required services enabled
 - **Permissions**: Appropriate user access controls
 - **Hardening**: VM-appropriate security measures
@@ -199,6 +224,7 @@ nix build .#vm-launcher-desktop --dry-run
 ## Integration Points
 
 ### Main Framework
+
 - **Unified Library**: Uses shared `mkSystem` function
 - **Module System**: Integrates with unified module architecture
 - **Profiles**: Based on QEMU-optimized profile

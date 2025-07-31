@@ -1,36 +1,29 @@
 {
   description = "Unified Modular NixOS Configuration Framework";
-
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-24.11";
-
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
     };
-
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
     deploy-rs = {
       url = "github:serokell/deploy-rs";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
     agenix = {
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
     disko = {
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-
   outputs = inputs @ {
     self,
     nixpkgs,
@@ -38,8 +31,7 @@
     ...
   }:
     flake-parts.lib.mkFlake {inherit inputs;} {
-      systems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin"];
-
+      systems = ["x86_64-linux" "aarch64-linux"];
       imports = [
         ./flake-modules/systems.nix
         ./flake-modules/packages.nix
@@ -48,22 +40,14 @@
         ./flake-modules/deployment.nix
         ./flake-modules/vm-images.nix
       ];
-
       flake = {
-        # Unified library for reuse across configurations
         lib = import ./lib {
           inherit inputs;
           inherit (nixpkgs) lib;
         };
-
-        # Shared modules for all configurations
         nixosModules = import ./modules;
-
-
-        # Templates for new configurations
         templates = import ./templates;
       };
-
       perSystem = {
         config,
         self',
@@ -72,40 +56,40 @@
         system,
         ...
       }: {
-        # Development environment
+        _module.args.pkgs = import nixpkgs {
+          inherit system;
+          config = {
+            allowUnfree = true;
+          };
+        };
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
-            # Nix tools
             nixpkgs-fmt
             alejandra
             nil
             nix-tree
-
-            # Deployment tools
             inputs.deploy-rs.packages.${system}.default or pkgs.deploy-rs
-
-            # Development tools
             git
             pre-commit
             shellcheck
-
-            # Validation tools
+            jq
             statix
             deadnix
+            hyperfine
+            nodePackages.markdownlint-cli
+            nix-du
           ];
-
           shellHook = ''
             echo "🏗️  Unified NixOS Development Environment"
             echo "📦 Available commands:"
-            echo "  nix run .#install <profile> <hostname>"
-            echo "  nix run .#deploy <hostname>"
-            echo "  nix run .#validate"
-            echo "  nix run .#security-audit"
+            echo "  nix run .
+            echo "  nix run .
+            echo "  nix run .
+            echo "  nix run .
             echo ""
+            echo "💡 For more help, see: https://github.com/nixos-unified/docs"
           '';
         };
-
-        # Formatter for the project
         formatter = pkgs.alejandra;
       };
     };

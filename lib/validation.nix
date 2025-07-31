@@ -1,52 +1,40 @@
 {lib}: rec {
-  # Configuration validation utilities
   validateConfig = config: {
     assertions = [
-      # Security validations
       {
         assertion = config.networking.firewall.enable or true;
         message = "Firewall must be enabled for security";
       }
-
       {
         assertion = !(config.services.openssh.settings.PermitRootLogin or "no" == "yes");
         message = "Root SSH login should be disabled for security";
       }
-
       {
         assertion = !(config.services.openssh.settings.PasswordAuthentication or false);
         message = "SSH password authentication should be disabled";
       }
-
-      # Performance validations
       {
         assertion = config.nix.settings.auto-optimise-store or false;
         message = "Nix store optimization should be enabled for performance";
       }
-
-      # System validations
       {
         assertion = config.system.stateVersion != null;
         message = "System state version must be set";
       }
     ];
   };
-
-  # Security-specific validation
   validateSecurity = config: securityLevel: let
     requiredByLevel = {
       basic = [
         "networking.firewall.enable"
         "security.sudo.enable"
       ];
-
       standard = [
         "networking.firewall.enable"
         "security.sudo.enable"
         "services.fail2ban.enable"
         "security.apparmor.enable"
       ];
-
       hardened = [
         "networking.firewall.enable"
         "security.sudo.enable"
@@ -54,7 +42,6 @@
         "security.apparmor.enable"
         "boot.kernel.sysctl.\"kernel.dmesg_restrict\""
       ];
-
       paranoid = [
         "networking.firewall.enable"
         "security.sudo.enable"
@@ -64,7 +51,6 @@
         "systemd.coredump.enable"
       ];
     };
-
     required = requiredByLevel.${securityLevel} or [];
   in {
     assertions =
@@ -75,25 +61,18 @@
       })
       required;
   };
-
-  # Performance validation
   validatePerformance = config: {
     warnings = lib.flatten [
-      # Large package lists warning
       (
         lib.optional
         (lib.length (config.environment.systemPackages or []) > 100)
         "Large package list detected (${toString (lib.length config.environment.systemPackages)} packages). Consider modularization."
       )
-
-      # Missing optimizations warning
       (
         lib.optional
         (!(config.nix.settings.auto-optimise-store or false))
         "Nix store auto-optimization is disabled. Enable for better performance."
       )
-
-      # Missing parallel builds warning
       (
         lib.optional
         (config.nix.settings.max-jobs or "1" == "1")
@@ -101,8 +80,6 @@
       )
     ];
   };
-
-  # Module dependency validation
   validateDependencies = moduleName: dependencies: config: {
     assertions =
       map
@@ -112,8 +89,6 @@
       })
       dependencies;
   };
-
-  # Hardware validation
   validateHardware = config: hardware: {
     assertions = [
       {
@@ -124,22 +99,18 @@
           && (hardware.cpu.amd.enable -> config.hardware.cpu.amd.updateMicrocode or false);
         message = "CPU microcode updates should be enabled for security and stability";
       }
-
       {
         assertion = hardware.graphics.enable -> config.hardware.opengl.enable or false;
         message = "OpenGL must be enabled when graphics hardware is present";
       }
     ];
   };
-
-  # Network validation
   validateNetwork = config: {
     assertions = [
       {
         assertion = config.networking.hostName != null && config.networking.hostName != "";
         message = "System hostname must be set";
       }
-
       {
         assertion =
           !(config.networking.firewall.enable or true)
@@ -147,7 +118,6 @@
         message = "Firewall should only be disabled in development environments";
       }
     ];
-
     warnings = [
       (
         lib.optional
@@ -156,8 +126,6 @@
       )
     ];
   };
-
-  # User validation
   validateUsers = config: {
     assertions = [
       {
@@ -166,15 +134,12 @@
           (lib.attrValues config.users.users);
         message = "At least one normal user with wheel access must be configured";
       }
-
       {
         assertion = !(config.users.users.root.hashedPassword or "" == "");
         message = "Root user must have a password or be locked";
       }
     ];
-
     warnings = lib.flatten [
-      # Users with empty passwords
       (lib.mapAttrsToList
         (
           name: user:
@@ -182,8 +147,6 @@
             "User '${name}' has plaintext password. Use hashedPassword instead."
         )
         config.users.users)
-
-      # Users without SSH keys
       (lib.mapAttrsToList
         (
           name: user:
@@ -195,8 +158,6 @@
         config.users.users)
     ];
   };
-
-  # Service validation
   validateServices = config: {
     assertions = [
       {
@@ -205,7 +166,6 @@
           -> config.services.openssh.settings.PermitRootLogin or "no" != "yes";
         message = "SSH root login should be disabled when SSH is enabled";
       }
-
       {
         assertion =
           config.services.openssh.enable
@@ -217,8 +177,6 @@
       }
     ];
   };
-
-  # Comprehensive validation function
   validateAll = config: securityLevel:
     lib.mkMerge [
       (validateConfig config)

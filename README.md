@@ -13,6 +13,7 @@
 NixOS Unified is an enterprise-grade, modular configuration framework that eliminates code duplication, enforces security best practices, and provides performance-optimized deployments across diverse environments.
 
 ### **Key Benefits**
+
 - **🔒 Security-First**: Built-in hardening with configurable security levels
 - **⚡ Performance-Optimized**: 25-40% faster builds through modular design
 - **🧩 Highly Modular**: 60% code reuse through shared components
@@ -35,6 +36,7 @@ nixos-unified/
 ```
 
 ### **Core Principles**
+
 1. **Security by Default**: Every component includes security hardening
 2. **Performance First**: Lazy evaluation and optimized build patterns
 3. **Modular Composition**: Reusable components with clear interfaces
@@ -59,6 +61,7 @@ cd my-config
 ```
 
 ### **2. Customize Configuration**
+
 ```bash
 # Edit your requirements
 vim flake.nix
@@ -68,6 +71,7 @@ vim flake.nix
 ```
 
 ### **3. Deploy System**
+
 ```bash
 # Install locally
 nixos-rebuild switch --flake .#your-profile
@@ -83,6 +87,7 @@ deploy .#your-host
 ## 🧩 **Unified Modules**
 
 ### **Core Foundation**
+
 ```nix
 unified.core = {
   enable = true;
@@ -92,6 +97,7 @@ unified.core = {
 ```
 
 ### **Desktop Environment**
+
 ```nix
 unified.niri = {
   enable = true;
@@ -105,6 +111,7 @@ unified.niri = {
 ```
 
 ### **Gaming Optimizations**
+
 ```nix
 unified.gaming = {
   enable = true;
@@ -115,6 +122,7 @@ unified.gaming = {
 ```
 
 ### **Development Environment**
+
 ```nix
 unified.development = {
   enable = true;
@@ -135,26 +143,31 @@ unified.development = {
 ### **Configurable Security Levels**
 
 #### **Basic** - Minimal security for development/VMs
+
 - SSH key authentication
 - Basic firewall rules
 - Essential hardening
 
 #### **Standard** - Balanced security for workstations
+
 - Fail2ban intrusion detection
 - Kernel hardening parameters
 - AppArmor mandatory access control
 
 #### **Hardened** - Enhanced security for servers
+
 - Comprehensive kernel hardening
 - Network protocol restrictions
 - Security audit tools
 
 #### **Paranoid** - Maximum security for critical systems
+
 - Disabled unused services and protocols
 - Stricter firewall policies
 - Advanced threat detection
 
 ### **Security Validation**
+
 ```bash
 # Automated security audit
 nix run .#security-audit
@@ -171,18 +184,21 @@ nix run .#performance-check
 ## ⚡ **Performance Optimizations**
 
 ### **Build Performance**
+
 - **Lazy Evaluation**: Components loaded only when needed
 - **Modular Packages**: Categorized package sets reduce evaluation time
 - **Parallel Builds**: Optimized dependency resolution
 - **Cached Derivations**: Shared components across configurations
 
 ### **Runtime Performance**
+
 - **Service Parallelization**: Concurrent service startup
 - **Memory Optimization**: Efficient resource utilization
 - **Network Tuning**: Gaming and server optimizations
 - **Storage Efficiency**: Automatic Nix store optimization
 
 ### **Performance Gains**
+
 - **40% faster** configuration evaluation
 - **25% reduction** in build times
 - **30% less** memory usage
@@ -193,6 +209,7 @@ nix run .#performance-check
 ## 🚀 **Deployment Framework**
 
 ### **Automated Deployment**
+
 ```bash
 # Deploy with validation
 nix run .#deploy-workstation
@@ -205,6 +222,7 @@ nix run .#deploy-vm
 ```
 
 ### **Health Monitoring**
+
 ```bash
 # System health check
 nix run .#health-check hostname
@@ -214,6 +232,7 @@ nix run .#rollback hostname
 ```
 
 ### **Deployment Features**
+
 - **Pre-deployment validation**: Security, syntax, and performance checks
 - **Health monitoring**: Automated service validation post-deployment
 - **Intelligent rollback**: Automatic rollback on failure detection
@@ -224,24 +243,28 @@ nix run .#rollback hostname
 ## 📋 **Available Profiles**
 
 ### **Workstation** - Full desktop experience
+
 - Niri/Hyprland/Plasma6 desktop environments
 - Development tools and IDE integration
 - Media production capabilities
 - Gaming optimization (optional)
 
 ### **Server** - Production server configuration
+
 - Hardened security posture
 - Optimized for headless operation
 - Container orchestration ready
 - Monitoring and logging integration
 
 ### **Development** - Developer-focused environment
+
 - Multiple language support
 - Container and virtualization tools
 - Performance profiling tools
 - Debugging and development utilities
 
 ### **VM** - Virtual machine optimized
+
 - QEMU guest optimizations
 - Minimal security restrictions
 - Fast boot configuration
@@ -252,6 +275,7 @@ nix run .#rollback hostname
 ## 🧪 **Testing & Validation**
 
 ### **Comprehensive Testing**
+
 ```bash
 # Run all tests
 nix flake check
@@ -263,6 +287,7 @@ nix build .#checks.x86_64-linux.build-all-configs
 ```
 
 ### **Continuous Integration**
+
 - **Syntax validation**: All Nix files checked for syntax errors
 - **Security scanning**: Automated vulnerability detection
 - **Performance benchmarking**: Build time and resource usage monitoring
@@ -273,6 +298,7 @@ nix build .#checks.x86_64-linux.build-all-configs
 ## 🔧 **Development**
 
 ### **Contributing**
+
 ```bash
 # Clone repository
 git clone https://github.com/user/nixos-unified
@@ -289,6 +315,7 @@ nix run .#validate
 ```
 
 ### **Development Tools**
+
 - **Pre-commit hooks**: Automatic formatting and validation
 - **IDE integration**: VSCode settings and extensions
 - **Live testing**: Fast iteration with development profiles
@@ -299,6 +326,7 @@ nix run .#validate
 ## 📚 **Documentation**
 
 ### **Module Documentation**
+
 - [Core Modules](./docs/modules/core.md)
 - [Security Framework](./docs/security.md)
 - [Desktop Environments](./docs/desktop.md)
@@ -306,12 +334,14 @@ nix run .#validate
 - [Development Tools](./docs/development.md)
 
 ### **Deployment Guides**
+
 - [Production Deployment](./docs/deployment/production.md)
-- [Home Lab Setup](./docs/deployment/homelab.md)
+- [Self-Hosting Setup](./docs/deployment/self-hosting.md)
 - [VM Configuration](./docs/deployment/vm.md)
 - [Migration Guide](./docs/migration.md)
 
 ### **Advanced Topics**
+
 - [Custom Module Development](./docs/advanced/custom-modules.md)
 - [Performance Tuning](./docs/advanced/performance.md)
 - [Security Hardening](./docs/advanced/security.md)
@@ -322,12 +352,14 @@ nix run .#validate
 ## 🤝 **Community**
 
 ### **Support**
+
 - 📖 [Documentation](./docs/)
 - 🐛 [Issue Tracker](https://github.com/user/nixos-unified/issues)
 - 💬 [Discussions](https://github.com/user/nixos-unified/discussions)
 - 📧 [Matrix Chat](https://matrix.to/#/#nixos-unified:matrix.org)
 
 ### **Contributing**
+
 - 🔧 [Development Guide](./CONTRIBUTING.md)
 - 📝 [Code of Conduct](./CODE_OF_CONDUCT.md)
 - 🎯 [Roadmap](./ROADMAP.md)
@@ -353,6 +385,7 @@ NixOS Unified is licensed under the [MIT License](./LICENSE).
 | **Scalability** | Limited patterns | Horizontal scaling built-in |
 
 ### **Success Stories**
+
 - **🏢 Enterprise**: 50% reduction in configuration management overhead
 - **🏠 Home Lab**: 40% faster deployment with automated validation
 - **🔬 Development**: Consistent environments across 20+ developers

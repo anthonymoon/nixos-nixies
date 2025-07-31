@@ -2,7 +2,8 @@
   inputs,
   lib,
 }: {
-  # Unified system creation function
+  #
+  #
   mkSystem = {
     hostname,
     system ? "x86_64-linux",
@@ -13,7 +14,6 @@
     specialArgs ? {},
     deployment ? {},
   }: let
-    # Security-first defaults
     securityDefaults = {
       networking.firewall.enable = lib.mkDefault true;
       services.openssh.settings = {
@@ -22,8 +22,6 @@
       };
       security.sudo.wheelNeedsPassword = lib.mkDefault true;
     };
-
-    # Performance defaults
     performanceDefaults = {
       nix.settings = {
         experimental-features = ["nix-command" "flakes"];
@@ -35,39 +33,22 @@
   in
     inputs.nixpkgs.lib.nixosSystem {
       inherit system;
-
       modules =
         [
-          # Core unified modules
           ../modules/core
-
-          # Security-first configuration
           securityDefaults
-
-          # Performance optimizations
           performanceDefaults
-
-          # Hardware configuration
-          (lib.mkIf (hardware != null) hardware)
-
-          # Profile composition
+          (lib.optionalAttrs (hardware != null) hardware)
         ]
         ++ (map (profile: ../profiles/${profile}.nix) profiles)
         ++ [
-          # Host-specific configuration
           {
-            networking.hostName = hostname;
+            unified.core.hostname = hostname;
             system.stateVersion = lib.mkDefault "24.11";
-
-            # User configuration
             users.users = users;
-
-            # Deployment metadata
-            unified.deployment = deployment;
           }
         ]
         ++ modules;
-
       specialArgs =
         {
           inherit hostname inputs;
@@ -75,8 +56,8 @@
         }
         // specialArgs;
     };
-
-  # Profile creation helper
+  #
+  #
   mkProfile = {
     name,
     description,
@@ -84,16 +65,14 @@
     defaultUsers ? {},
   }: {
     imports = modules;
-
     meta = {
       inherit name description;
       maintainers = ["nixos-unified"];
     };
-
     users.users = defaultUsers;
   };
-
-  # Specialization helper for different variants
+  #
+  #
   mkSpecialization = {
     name,
     configuration,

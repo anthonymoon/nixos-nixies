@@ -41,6 +41,7 @@ nixos-generate-config --root /mnt --show-hardware-config > hardware-configuratio
 ### 3. Install System
 
 #### Enterprise Configuration (Stable/Secure)
+
 ```bash
 # Install with enterprise profile
 nixos-install --flake .#enterprise --root /mnt
@@ -50,6 +51,7 @@ nixos-rebuild switch --flake .#enterprise
 ```
 
 #### Home Configuration (Bleeding-edge)
+
 ```bash
 # Install with home profile
 nixos-install --flake .#home --root /mnt
@@ -59,6 +61,7 @@ nixos-rebuild switch --flake .#home
 ```
 
 #### VM Configuration (QEMU-optimized)
+
 ```bash
 # For VMs, use VM profile
 nixos-install --flake .#vm --root /mnt
@@ -96,12 +99,14 @@ Default password for all users: `nixos` (change immediately!)
 
 ### Desktop Environments
 
-#### Available Compositors:
+#### Available Compositors
+
 - **Niri**: Scrollable tiling compositor (default)
 - **Hyprland**: Dynamic tiling compositor
 - **Plasma 6**: Full KDE desktop (home config only)
 
-#### Login Manager:
+#### Login Manager
+
 - **greetd** with **tuigreet** for clean console login
 - Session selection available in tuigreet
 
@@ -114,19 +119,22 @@ Default password for all users: `nixos` (change immediately!)
 
 ### Security Levels
 
-#### Enterprise Configuration:
+#### Enterprise Configuration
+
 - Hardened security level
 - Only FOSS packages
 - Minimal attack surface
 - Comprehensive security hardening
 
-#### Home Configuration:
+#### Home Configuration
+
 - Standard security level
 - Unfree packages allowed
 - Full desktop experience
 - Development tools included
 
-#### VM Configuration:
+#### VM Configuration
+
 - Basic security level
 - No firewall (for VM networking)
 - QEMU guest optimizations
@@ -136,14 +144,16 @@ Default password for all users: `nixos` (change immediately!)
 
 ### Adding Packages
 
-#### Enterprise (stable packages):
+#### Enterprise (stable packages)
+
 ```nix
 environment.systemPackages = with pkgs; [
   # Add stable packages here
 ];
 ```
 
-#### Home (bleeding-edge packages):
+#### Home (bleeding-edge packages)
+
 ```nix
 environment.systemPackages = with nixpkgs-unstable.legacyPackages.${system}; [
   # Add unstable packages here
@@ -153,6 +163,7 @@ environment.systemPackages = with nixpkgs-unstable.legacyPackages.${system}; [
 ### Changing Desktop Environment
 
 To use Hyprland instead of Niri:
+
 ```nix
 # Disable Niri
 programs.niri.enable = false;
@@ -165,6 +176,7 @@ services.greetd.settings.default_session.command = "tuigreet --time --cmd Hyprla
 ```
 
 To use Plasma 6:
+
 ```nix
 # Enable Plasma
 services.desktopManager.plasma6.enable = true;
@@ -179,6 +191,7 @@ services.greetd.enable = false;
 ### Adding SSH Keys
 
 Replace the `sharedSSHKey` variable in `flake.nix`:
+
 ```nix
 sharedSSHKey = "ssh-ed25519 YOUR_PUBLIC_KEY_HERE user@host";
 ```
@@ -186,6 +199,7 @@ sharedSSHKey = "ssh-ed25519 YOUR_PUBLIC_KEY_HERE user@host";
 ### Deployment Configuration
 
 Update hostnames in the deploy section:
+
 ```nix
 deploy.nodes = {
   enterprise.hostname = "your-enterprise-host.local";
@@ -197,6 +211,7 @@ deploy.nodes = {
 ## Available Commands
 
 ### System Management
+
 ```bash
 # Build configuration
 nix build .#nixosConfigurations.enterprise.config.system.build.toplevel
@@ -209,12 +224,14 @@ nixos-rebuild test --flake .#enterprise
 ```
 
 ### Home Manager
+
 ```bash
 # Switch home configuration
 home-manager switch --flake .#amoon@hostname
 ```
 
 ### Deployment
+
 ```bash
 # Deploy to remote host
 deploy .#enterprise
@@ -227,6 +244,7 @@ deploy .#vm
 ```
 
 ### Development
+
 ```bash
 # Enter development shell
 nix develop
@@ -241,21 +259,25 @@ nix flake check
 ## Troubleshooting
 
 ### Boot Issues
+
 - Ensure UEFI mode is enabled in BIOS
 - Check that `/boot` partition is properly mounted
 - Verify hardware-configuration.nix includes correct disk UUIDs
 
 ### Network Issues
+
 - Check systemd-networkd status: `systemctl status systemd-networkd`
 - Verify interface names match the `en*` pattern
 - Check DHCP configuration: `networkctl status`
 
 ### Desktop Environment Issues
+
 - Check session availability: `ls /run/current-system/sw/share/wayland-sessions/`
 - Verify compositor is installed: `which niri` or `which Hyprland`
 - Check greetd logs: `journalctl -u greetd`
 
 ### SSH Access
+
 - Verify SSH service is running: `systemctl status sshd`
 - Check SSH key permissions: `ls -la ~/.ssh/`
 - Test SSH key: `ssh-add -l`
@@ -263,6 +285,7 @@ nix flake check
 ## Security Notes
 
 ### Default Passwords
+
 ⚠️ **CRITICAL**: Change default passwords immediately after installation!
 
 ```bash
@@ -272,8 +295,10 @@ passwd root
 ```
 
 ### SSH Configuration
+
 - Password authentication is enabled by default for initial setup
 - Disable password auth after setting up SSH keys:
+
 ```nix
 unified.core.security.ssh.passwordAuth = false;
 ```

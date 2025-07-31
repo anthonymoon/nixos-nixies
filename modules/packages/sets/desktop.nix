@@ -5,20 +5,16 @@
   inputs,
   ...
 }: let
-  unified-lib = config.unified-lib or (import ../../../lib {inherit inputs lib;});
+  unified-lib = import ../../../lib {inherit inputs lib;};
 in
-  unified-lib.mkUnifiedModule {
+  (unified-lib.mkUnifiedModule {
     name = "packages-desktop";
     description = "Desktop environment packages including window managers, display managers, and desktop utilities";
     category = "packages";
-
     options = with lib; {
       enable = mkEnableOption "desktop package set";
-
-      # Window managers and compositors
       window-managers = {
         enable = mkEnableOption "window managers and compositors" // {default = true;};
-
         niri = {
           enable = mkEnableOption "Niri scrollable-tiling Wayland compositor";
           features = {
@@ -28,22 +24,18 @@ in
             notifications = mkEnableOption "notification support" // {default = true;};
           };
         };
-
         hyprland = {
           enable = mkEnableOption "Hyprland dynamic tiling Wayland compositor";
           plugins = mkEnableOption "Hyprland plugin ecosystem";
           animations = mkEnableOption "advanced animations and effects" // {default = true;};
           config-tools = mkEnableOption "configuration and management tools";
         };
-
         plasma6 = {
           enable = mkEnableOption "KDE Plasma 6 desktop environment";
           full-suite = mkEnableOption "full KDE application suite";
           wayland-session = mkEnableOption "Wayland session support" // {default = true;};
           customization = mkEnableOption "theme and customization packages";
         };
-
-        # Additional window managers
         alternatives = {
           sway = mkEnableOption "Sway i3-compatible Wayland compositor";
           i3 = mkEnableOption "i3 tiling window manager";
@@ -52,11 +44,8 @@ in
           bspwm = mkEnableOption "BSPWM binary space partitioning window manager";
         };
       };
-
-      # Display managers
       display-managers = {
         enable = mkEnableOption "display managers" // {default = true;};
-
         greetd = {
           enable = mkEnableOption "greetd minimal display manager" // {default = true;};
           greeters = {
@@ -65,7 +54,6 @@ in
             web-greeter = mkEnableOption "web-based greeter";
           };
         };
-
         alternatives = {
           gdm = mkEnableOption "GDM (GNOME Display Manager)";
           sddm = mkEnableOption "SDDM (Simple Desktop Display Manager)";
@@ -73,11 +61,8 @@ in
           ly = mkEnableOption "Ly TUI display manager";
         };
       };
-
-      # Desktop utilities and applications
       utilities = {
         enable = mkEnableOption "desktop utilities and applications" // {default = true;};
-
         terminal-emulators = {
           enable = mkEnableOption "terminal emulators" // {default = true;};
           packages = mkOption {
@@ -86,7 +71,6 @@ in
             description = "Terminal emulators to install";
           };
         };
-
         file-managers = {
           enable = mkEnableOption "graphical file managers";
           packages = mkOption {
@@ -95,7 +79,6 @@ in
             description = "File managers to install";
           };
         };
-
         launchers = {
           enable = mkEnableOption "application launchers" // {default = true;};
           packages = mkOption {
@@ -104,7 +87,6 @@ in
             description = "Application launchers to install";
           };
         };
-
         notifications = {
           enable = mkEnableOption "notification systems" // {default = true;};
           daemon = mkOption {
@@ -113,7 +95,6 @@ in
             description = "Notification daemon to use";
           };
         };
-
         status-bars = {
           enable = mkEnableOption "status bars and panels";
           packages = mkOption {
@@ -122,7 +103,6 @@ in
             description = "Status bars to install";
           };
         };
-
         system-monitors = {
           enable = mkEnableOption "graphical system monitors";
           packages = mkOption {
@@ -132,16 +112,12 @@ in
           };
         };
       };
-
-      # Wayland ecosystem
       wayland = {
         enable = mkEnableOption "Wayland display server and ecosystem" // {default = true;};
-
         core = {
           protocols = mkEnableOption "Wayland protocols and extensions" // {default = true;};
           utilities = mkEnableOption "Wayland-specific utilities" // {default = true;};
         };
-
         screen-capture = {
           enable = mkEnableOption "screen capture and recording tools";
           packages = mkOption {
@@ -150,7 +126,6 @@ in
             description = "Screen capture tools";
           };
         };
-
         clipboard = {
           enable = mkEnableOption "clipboard managers" // {default = true;};
           manager = mkOption {
@@ -160,16 +135,12 @@ in
           };
         };
       };
-
-      # Theming and customization
       theming = {
         enable = mkEnableOption "theming and customization tools";
-
         icon-themes = mkEnableOption "icon theme packages";
         gtk-themes = mkEnableOption "GTK theme packages";
         qt-themes = mkEnableOption "Qt theme packages";
         cursor-themes = mkEnableOption "cursor theme packages";
-
         tools = {
           enable = mkEnableOption "theme management tools";
           lxappearance = mkEnableOption "LXAppearance GTK theme manager";
@@ -177,18 +148,14 @@ in
           kvantum = mkEnableOption "Kvantum theme engine";
         };
       };
-
-      # Accessibility
       accessibility = {
         enable = mkEnableOption "accessibility features and tools";
-
         screen-reader = mkEnableOption "screen reader support";
         magnifier = mkEnableOption "screen magnification tools";
         high-contrast = mkEnableOption "high contrast themes";
         large-fonts = mkEnableOption "large font support";
       };
     };
-
     config = {
       cfg,
       config,
@@ -196,17 +163,10 @@ in
       pkgs,
     }:
       lib.mkIf cfg.enable {
-        # Window managers and compositors
         environment.systemPackages = with pkgs;
           lib.flatten [
-            # Niri compositor
             (lib.optionals cfg.window-managers.niri.enable [
-              # Note: Niri might need to be built from source or available in unstable
-              # Placeholder for now - would need actual niri package
-              # niri
-            ])
-
-            # Hyprland
+              ])
             (lib.optionals cfg.window-managers.hyprland.enable [
               hyprland
               hyprpaper
@@ -214,25 +174,20 @@ in
               hypridle
               hyprlock
             ])
-
             (lib.optionals cfg.window-managers.hyprland.plugins [
               hyprland-plugins.hy3
               hyprland-plugins.hyprexpo
             ])
-
             (lib.optionals cfg.window-managers.hyprland.config-tools [
               hyprland-monitor-attached
               wlr-randr
             ])
-
-            # KDE Plasma 6
             (lib.optionals cfg.window-managers.plasma6.enable [
               kdePackages.plasma-desktop
               kdePackages.plasma-workspace
               kdePackages.systemsettings
               kdePackages.kwin
             ])
-
             (lib.optionals cfg.window-managers.plasma6.full-suite [
               kdePackages.kate
               kdePackages.dolphin
@@ -243,243 +198,187 @@ in
               kdePackages.ark
               kdePackages.plasma-systemmonitor
             ])
-
-            # Alternative window managers
             (lib.optionals cfg.window-managers.alternatives.sway [
               sway
               swaylock
               swayidle
               swaybg
             ])
-
             (lib.optionals cfg.window-managers.alternatives.i3 [
               i3
               i3status
               i3lock
               i3blocks
             ])
-
             (lib.optionals cfg.window-managers.alternatives.awesome [
               awesome
             ])
-
             (lib.optionals cfg.window-managers.alternatives.bspwm [
               bspwm
               sxhkd
             ])
-
-            # Display managers
             (lib.optionals cfg.display-managers.greetd.enable [
               greetd.greetd
             ])
-
             (lib.optionals cfg.display-managers.greetd.greeters.tuigreet [
               greetd.tuigreet
             ])
-
             (lib.optionals cfg.display-managers.greetd.greeters.gtk-greet [
               greetd.gtkgreet
             ])
-
             (lib.optionals cfg.display-managers.alternatives.gdm [
               gnome.gdm
             ])
-
             (lib.optionals cfg.display-managers.alternatives.sddm [
               sddm
             ])
-
             (lib.optionals cfg.display-managers.alternatives.lightdm [
               lightdm
               lightdm-gtk-greeter
             ])
-
-            # Terminal emulators
             (lib.optionals
               (cfg.utilities.terminal-emulators.enable
                 && builtins.elem "alacritty" cfg.utilities.terminal-emulators.packages) [
                 alacritty
               ])
-
             (lib.optionals
               (cfg.utilities.terminal-emulators.enable
                 && builtins.elem "kitty" cfg.utilities.terminal-emulators.packages) [
                 kitty
               ])
-
             (lib.optionals
               (cfg.utilities.terminal-emulators.enable
                 && builtins.elem "foot" cfg.utilities.terminal-emulators.packages) [
                 foot
               ])
-
             (lib.optionals
               (cfg.utilities.terminal-emulators.enable
                 && builtins.elem "wezterm" cfg.utilities.terminal-emulators.packages) [
                 wezterm
               ])
-
-            # File managers
             (lib.optionals
               (cfg.utilities.file-managers.enable
                 && builtins.elem "nautilus" cfg.utilities.file-managers.packages) [
                 gnome.nautilus
               ])
-
             (lib.optionals
               (cfg.utilities.file-managers.enable
                 && builtins.elem "dolphin" cfg.utilities.file-managers.packages) [
                 kdePackages.dolphin
               ])
-
             (lib.optionals
               (cfg.utilities.file-managers.enable
                 && builtins.elem "thunar" cfg.utilities.file-managers.packages) [
                 xfce.thunar
               ])
-
-            # Application launchers
             (lib.optionals
               (cfg.utilities.launchers.enable
                 && builtins.elem "rofi" cfg.utilities.launchers.packages) [
                 rofi-wayland
               ])
-
             (lib.optionals
               (cfg.utilities.launchers.enable
                 && builtins.elem "wofi" cfg.utilities.launchers.packages) [
                 wofi
               ])
-
             (lib.optionals
               (cfg.utilities.launchers.enable
                 && builtins.elem "fuzzel" cfg.utilities.launchers.packages) [
                 fuzzel
               ])
-
-            # Status bars
             (lib.optionals
               (cfg.utilities.status-bars.enable
                 && builtins.elem "waybar" cfg.utilities.status-bars.packages) [
                 waybar
               ])
-
             (lib.optionals
               (cfg.utilities.status-bars.enable
                 && builtins.elem "polybar" cfg.utilities.status-bars.packages) [
                 polybar
               ])
-
             (lib.optionals
               (cfg.utilities.status-bars.enable
                 && builtins.elem "eww" cfg.utilities.status-bars.packages) [
                 eww
               ])
-
-            # System monitors
             (lib.optionals
               (cfg.utilities.system-monitors.enable
                 && builtins.elem "mission-center" cfg.utilities.system-monitors.packages) [
                 mission-center
               ])
-
             (lib.optionals
               (cfg.utilities.system-monitors.enable
                 && builtins.elem "gnome-system-monitor" cfg.utilities.system-monitors.packages) [
                 gnome.gnome-system-monitor
               ])
-
-            # Wayland utilities
             (lib.optionals cfg.wayland.core.protocols [
               wayland-protocols
               wayland-scanner
               wlr-protocols
             ])
-
             (lib.optionals cfg.wayland.core.utilities [
               wlr-randr
               wlr-layout-ui
               wev
               wayland-utils
             ])
-
-            # Screen capture
             (lib.optionals
               (cfg.wayland.screen-capture.enable
                 && builtins.elem "grim" cfg.wayland.screen-capture.packages) [
                 grim
               ])
-
             (lib.optionals
               (cfg.wayland.screen-capture.enable
                 && builtins.elem "slurp" cfg.wayland.screen-capture.packages) [
                 slurp
               ])
-
             (lib.optionals
               (cfg.wayland.screen-capture.enable
                 && builtins.elem "wl-clipboard" cfg.wayland.screen-capture.packages) [
                 wl-clipboard
               ])
-
-            # Notification daemon
             (lib.optionals
               (cfg.utilities.notifications.enable
                 && cfg.utilities.notifications.daemon == "mako") [
                 mako
               ])
-
             (lib.optionals
               (cfg.utilities.notifications.enable
                 && cfg.utilities.notifications.daemon == "dunst") [
                 dunst
               ])
-
-            # Theming tools
             (lib.optionals cfg.theming.tools.enable [
               (lib.optionals cfg.theming.tools.lxappearance [lxappearance])
               (lib.optionals cfg.theming.tools.qt5ct [qt5ct])
               (lib.optionals cfg.theming.tools.kvantum [libsForQt5.qtstyleplugin-kvantum])
             ])
-
-            # Icon themes
             (lib.optionals cfg.theming.icon-themes [
               papirus-icon-theme
               numix-icon-theme
               tela-icon-theme
               breeze-icons
             ])
-
-            # GTK themes
             (lib.optionals cfg.theming.gtk-themes [
               arc-theme
               adapta-gtk-theme
               materia-theme
               orchis-theme
             ])
-
-            # Cursor themes
             (lib.optionals cfg.theming.cursor-themes [
               bibata-cursors
               numix-cursor-theme
               vanilla-dmz
             ])
-
-            # Accessibility tools
             (lib.optionals cfg.accessibility.screen-reader [
               orca
               espeak
             ])
-
             (lib.optionals cfg.accessibility.magnifier [
-              gnome.gnome-shell # Has built-in magnifier
+              gnome.gnome-shell
               kmag
             ])
           ];
-
-        # Service configuration
         services = lib.mkMerge [
-          # Display manager configuration
           (lib.mkIf cfg.display-managers.greetd.enable {
             greetd = {
               enable = true;
@@ -498,22 +397,18 @@ in
               };
             };
           })
-
           (lib.mkIf cfg.display-managers.alternatives.gdm {
             xserver = {
               enable = true;
               displayManager.gdm.enable = true;
             };
           })
-
           (lib.mkIf cfg.display-managers.alternatives.sddm {
             xserver = {
               enable = true;
               displayManager.sddm.enable = true;
             };
           })
-
-          # Desktop portal for screen sharing
           (lib.mkIf cfg.wayland.enable {
             dbus.enable = true;
             xdg.portal = {
@@ -526,28 +421,20 @@ in
             };
           })
         ];
-
-        # Program configuration
         programs = lib.mkMerge [
-          # Hyprland
           (lib.mkIf cfg.window-managers.hyprland.enable {
             hyprland = {
               enable = true;
               xwayland.enable = true;
             };
           })
-
-          # Sway
           (lib.mkIf cfg.window-managers.alternatives.sway {
             sway = {
               enable = true;
               wrapperFeatures.gtk = true;
             };
           })
-
-          # Terminal configuration
           (lib.mkIf cfg.utilities.terminal-emulators.enable {
-            # Set default terminal
             environment.variables.TERMINAL =
               if builtins.elem "alacritty" cfg.utilities.terminal-emulators.packages
               then "alacritty"
@@ -558,19 +445,13 @@ in
               else "xterm";
           })
         ];
-
-        # Environment configuration
         environment.variables = lib.mkMerge [
-          # Wayland environment
           (lib.mkIf cfg.wayland.enable {
-            # Enable Wayland for supported applications
             NIXOS_OZONE_WL = "1";
             MOZ_ENABLE_WAYLAND = "1";
             QT_QPA_PLATFORM = "wayland";
             GDK_BACKEND = "wayland";
             XDG_SESSION_TYPE = "wayland";
-
-            # XDG directories
             XDG_CURRENT_DESKTOP =
               if cfg.window-managers.hyprland.enable
               then "Hyprland"
@@ -580,34 +461,24 @@ in
               then "sway"
               else "wayland";
           })
-
-          # Desktop application directories
           {
             XDG_DATA_DIRS = "/run/current-system/sw/share";
             XDG_CONFIG_DIRS = "/etc/xdg";
           }
         ];
-
-        # Font configuration for desktop
         fonts = {
           enableDefaultPackages = true;
           packages = with pkgs; [
-            # Desktop fonts
             inter
             roboto
             open-sans
             lato
             ubuntu_font_family
-
-            # Icon fonts
             font-awesome
             material-icons
-
-            # Emoji fonts
             noto-fonts-emoji
             twitter-color-emoji
           ];
-
           fontconfig = {
             enable = true;
             defaultFonts = {
@@ -617,8 +488,6 @@ in
               emoji = ["Noto Color Emoji" "Twitter Color Emoji"];
             };
           };
-
-          # Sound configuration
           pipewire = {
             enable = true;
             alsa.enable = true;
@@ -626,34 +495,27 @@ in
             pulse.enable = true;
             jack.enable = true;
           };
-
-          # Network discovery for desktop
           avahi = {
             enable = true;
             nssmdns = true;
             openFirewall = true;
           };
         };
-
-        # Security configuration for desktop
         security = {
           polkit.enable = true;
-          rtkit.enable = true; # For audio
+          rtkit.enable = true;
           pam.services.greetd.enableGnomeKeyring = lib.mkIf cfg.display-managers.greetd.enable true;
         };
-
-        # Hardware support for desktop
         hardware = {
           opengl = {
             enable = true;
             driSupport = true;
             driSupport32Bit = true;
           };
-
-          pulseaudio.enable = false; # Use PipeWire instead
+          pulseaudio.enable = false;
         };
       };
-
-    # Dependencies
     dependencies = ["core" "hardware"];
+  }) {
+    inherit config lib pkgs inputs;
   }

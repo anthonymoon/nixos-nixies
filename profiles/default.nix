@@ -1,7 +1,4 @@
 {
-  # NixOS Unified Profiles
-  # Collection of system profiles for different use cases
-
   base = import ./base.nix;
   workstation = import ./workstation.nix;
   home-desktop = import ./home-desktop.nix;

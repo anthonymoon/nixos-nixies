@@ -164,7 +164,7 @@
   "gitlens.statusBar.enabled": false,
   "prettier.configPath": ".prettierrc",
   "prettier.ignorePath": ".prettierignore",
-  "todo-tree.regex.regex": "((//|#|<!--|;|/\*|^)\\s*($TAGS)|^\\s*- \[ \])",
+  "todo-tree.regex.regex": "((//|#|<!--|;|/\\*|^)\\\\s*($TAGS)|^\\\\s*- \\[ \\])",
   "todo-tree.general.tags": [
     "TODO",
     "FIXME",

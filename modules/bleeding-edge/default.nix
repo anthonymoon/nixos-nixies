@@ -5,25 +5,21 @@
   inputs,
   ...
 }: let
-  unified-lib = config.unified-lib or (import ../../lib {inherit inputs lib;});
+  unified-lib = import ../../lib {inherit inputs lib;};
 in
-  unified-lib.mkUnifiedModule {
+  (unified-lib.mkUnifiedModule {
     name = "bleeding-edge";
     description = "Bleeding-edge package management and experimental features for home desktops";
     category = "system";
-
     options = with lib; {
       enable = mkEnableOption "bleeding-edge package management and experimental features";
-
       packages = {
         source = mkOption {
           type = types.enum ["nixpkgs-unstable" "nixos-unstable" "master" "local"];
           default = "nixpkgs-unstable";
           description = "Source for bleeding-edge packages";
         };
-
         override-stable = mkEnableOption "override stable packages with bleeding-edge versions";
-
         categories = {
           desktop = mkEnableOption "bleeding-edge desktop environment packages" // {default = true;};
           development = mkEnableOption "bleeding-edge development tools" // {default = true;};
@@ -31,7 +27,6 @@ in
           media = mkEnableOption "bleeding-edge media production tools" // {default = true;};
           system = mkEnableOption "bleeding-edge system components";
         };
-
         experimental = {
           enable = mkEnableOption "experimental and pre-release packages";
           allow-broken = mkEnableOption "allow packages marked as broken";
@@ -39,41 +34,35 @@ in
           allow-insecure = mkEnableOption "allow insecure packages (use with caution)";
         };
       };
-
       kernel = {
         version = mkOption {
           type = types.enum ["latest" "mainline" "zen" "xanmod" "liquorix" "rt"];
           default = "latest";
           description = "Kernel version to use";
         };
-
         patches = {
           gaming = mkEnableOption "apply gaming-optimized kernel patches";
           performance = mkEnableOption "apply performance optimization patches";
           security = mkEnableOption "apply latest security patches";
           experimental = mkEnableOption "apply experimental kernel patches";
         };
-
         modules = {
           out-of-tree = mkEnableOption "enable out-of-tree kernel modules";
           proprietary = mkEnableOption "enable proprietary kernel modules" // {default = true;};
         };
       };
-
       graphics = {
         drivers = mkOption {
           type = types.enum ["latest" "beta" "alpha" "git"];
           default = "latest";
           description = "Graphics driver version preference";
         };
-
         mesa = {
           version = mkOption {
             type = types.enum ["stable" "git" "llvm-git"];
             default = "git";
             description = "Mesa version to use";
           };
-
           optimizations = {
             enable = mkEnableOption "enable Mesa performance optimizations" // {default = true;};
             compiler = mkOption {
@@ -83,13 +72,11 @@ in
             };
           };
         };
-
         vulkan = {
           beta-drivers = mkEnableOption "enable beta Vulkan drivers";
           experimental-features = mkEnableOption "enable experimental Vulkan features";
         };
       };
-
       desktop = {
         wayland = {
           compositor = mkOption {
@@ -97,25 +84,21 @@ in
             default = "git";
             description = "Wayland compositor version preference";
           };
-
           protocols = {
             experimental = mkEnableOption "enable experimental Wayland protocols" // {default = true;};
             custom = mkEnableOption "enable custom protocol implementations";
           };
         };
-
         gtk = {
           version = mkOption {
             type = types.enum ["3" "4" "git"];
             default = "4";
             description = "GTK version preference";
           };
-
           themes = {
             bleeding-edge = mkEnableOption "use bleeding-edge themes and customizations";
           };
         };
-
         qt = {
           version = mkOption {
             type = types.enum ["5" "6" "git"];
@@ -124,7 +107,6 @@ in
           };
         };
       };
-
       development = {
         languages = {
           rust = {
@@ -134,7 +116,6 @@ in
               description = "Rust toolchain channel";
             };
           };
-
           python = {
             version = mkOption {
               type = types.enum ["3.11" "3.12" "3.13" "rc"];
@@ -142,7 +123,6 @@ in
               description = "Python version";
             };
           };
-
           nodejs = {
             version = mkOption {
               type = types.enum ["18" "20" "21" "latest"];
@@ -150,7 +130,6 @@ in
               description = "Node.js version";
             };
           };
-
           go = {
             version = mkOption {
               type = types.enum ["1.21" "1.22" "rc" "tip"];
@@ -159,19 +138,16 @@ in
             };
           };
         };
-
         tools = {
           editors = {
             bleeding-edge = mkEnableOption "use bleeding-edge versions of editors" // {default = true;};
             experimental-features = mkEnableOption "enable experimental editor features";
           };
-
           lsp-servers = {
             latest = mkEnableOption "use latest LSP server versions" // {default = true;};
           };
         };
       };
-
       gaming = {
         drivers = {
           nvidia = {
@@ -181,7 +157,6 @@ in
               description = "NVIDIA driver version";
             };
           };
-
           amd = {
             version = mkOption {
               type = types.enum ["stable" "git" "experimental"];
@@ -190,44 +165,37 @@ in
             };
           };
         };
-
         wine = {
           version = mkOption {
             type = types.enum ["stable" "staging" "tkg" "ge" "lutris"];
             default = "staging";
             description = "Wine version preference";
           };
-
           dxvk = mkOption {
             type = types.enum ["stable" "git" "async"];
             default = "git";
             description = "DXVK version";
           };
-
           vkd3d = mkOption {
             type = types.enum ["stable" "git"];
             default = "git";
             description = "VKD3D version";
           };
         };
-
         emulation = {
           latest = mkEnableOption "use latest emulator versions" // {default = true;};
           experimental = mkEnableOption "enable experimental emulation features";
         };
       };
-
       security = {
         sandbox = {
           relaxed = mkEnableOption "use relaxed sandbox for bleeding-edge builds";
         };
-
         verification = {
           skip-hash-check = mkEnableOption "skip hash verification for git packages (dangerous)";
           allow-unfree-redistribute = mkEnableOption "allow redistribution of unfree packages";
         };
       };
-
       build = {
         optimization = {
           level = mkOption {
@@ -235,17 +203,14 @@ in
             default = "speed";
             description = "Build optimization level";
           };
-
           parallel = mkOption {
             type = types.int;
-            default = 0; # Auto-detect
+            default = 0;
             description = "Number of parallel build jobs (0 = auto)";
           };
-
           ccache = mkEnableOption "enable ccache for faster compilation" // {default = true;};
           sccache = mkEnableOption "enable sccache for Rust compilation";
         };
-
         features = {
           lto = mkEnableOption "enable Link Time Optimization";
           pgo = mkEnableOption "enable Profile Guided Optimization";
@@ -253,7 +218,6 @@ in
         };
       };
     };
-
     config = {
       cfg,
       config,
@@ -261,20 +225,14 @@ in
       pkgs,
     }:
       lib.mkMerge [
-        # Base bleeding-edge configuration
         (lib.mkIf cfg.enable {
-          # Package configuration
           nixpkgs = {
             config = lib.mkMerge [
               {
                 allowUnfree = cfg.packages.experimental.allow-unfree;
                 allowBroken = cfg.packages.experimental.allow-broken;
                 allowInsecure = cfg.packages.experimental.allow-insecure;
-
-                # Performance optimizations
                 contentAddressedByDefault = true;
-
-                # Experimental features
                 experimental-features = [
                   "nix-command"
                   "flakes"
@@ -283,91 +241,60 @@ in
                   "cgroups"
                 ];
               }
-
-              # Bleeding-edge package overrides
               (lib.mkIf cfg.packages.override-stable {
                 packageOverrides = pkgs:
                   with pkgs; {
-                    # Desktop applications
                     firefox = firefox-nightly;
                     vscode = vscode-insiders;
                     discord = discord-canary;
-
-                    # Development tools
                     git = gitFull;
                     neovim = neovim-nightly;
-
-                    # Gaming
                     steam = steam-beta;
                     lutris = lutris-freeworld;
                   };
               })
             ];
           };
-
-          # Essential bleeding-edge packages
           environment.systemPackages = with pkgs; [
-            # Development tools
             git-absorb
             git-branchless
             difftastic
-
-            # System utilities
-            dust # du replacement
+            dust
             ripgrep-all
             fd
             bat
             exa
             zoxide
             starship
-
-            # Performance monitoring
-            bottom # top replacement
-            procs # ps replacement
-            bandwhich # network monitor
-
-            # Modern alternatives
-            choose # cut replacement
-            sd # sed replacement
-            hyperfine # benchmark tool
-            tokei # code counter
-
-            # Bleeding-edge development
+            bottom
+            procs
+            bandwhich
+            choose
+            sd
+            hyperfine
+            tokei
             rustup
             cargo-update
             cargo-audit
             cargo-outdated
-
-            # Container tools
             podman-compose
-            dive # docker image analyzer
+            dive
             lazydocker
-
-            # Network tools
-            dog # dig replacement
-            gping # ping with graph
-
-            # File management
-            lsd # ls replacement
-            broot # tree navigator
-
-            # Version control
+            dog
+            gping
+            lsd
+            broot
             gitui
             lazygit
-            delta # git diff viewer
+            delta
           ];
-
-          # Nix configuration optimizations
           nix.settings = lib.mkMerge [
             {
-              # Build performance
               max-jobs =
                 if cfg.build.optimization.parallel == 0
                 then "auto"
                 else cfg.build.optimization.parallel;
-              cores = 0; # Use all available cores
-
-              # Experimental features
+              cores = 0;
               experimental-features = [
                 "nix-command"
                 "flakes"
@@ -377,19 +304,13 @@ in
                 "recursive-nix"
                 "ca-derivations"
               ];
-
-              # Build optimizations
               builders-use-substitutes = true;
               keep-outputs = true;
               keep-derivations = true;
-
-              # Sandbox configuration
               sandbox =
                 if cfg.security.sandbox.relaxed
                 then "relaxed"
                 else true;
-
-              # Substituters for bleeding-edge packages
               substituters = [
                 "https://cache.nixos.org"
                 "https://nix-community.cachix.org"
@@ -399,7 +320,6 @@ in
                 "https://numtide.cachix.org"
                 "https://pre-commit-hooks.cachix.org"
               ];
-
               trusted-public-keys = [
                 "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
                 "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
@@ -410,48 +330,32 @@ in
                 "pre-commit-hooks.cachix.org-1:Pkk3Panw5AW24TOv6kz3PvLhlH8puAsJTBbOPmBo7Rc="
               ];
             }
-
-            # Build optimization settings
             (lib.mkIf cfg.build.optimization.ccache {
               extra-sandbox-paths = ["/var/cache/ccache"];
             })
           ];
-
-          # Environment optimizations
           environment.variables = {
-            # Build optimizations
             MAKEFLAGS = "-j${toString (
               if cfg.build.optimization.parallel == 0
               then 8
               else cfg.build.optimization.parallel
             )}";
-
-            # Compiler optimizations
             CFLAGS = lib.mkMerge [
               (lib.mkIf (cfg.build.optimization.level == "speed") "-O3 -march=native")
               (lib.mkIf (cfg.build.optimization.level == "size") "-Os -march=native")
               (lib.mkIf (cfg.build.optimization.level == "aggressive") "-O3 -march=native -flto -ffast-math")
               (lib.mkIf (cfg.build.optimization.level == "native") "-O3 -march=native -mtune=native")
             ];
-
             CXXFLAGS = "$CFLAGS";
-
-            # Rust optimizations
             CARGO_BUILD_JOBS = toString (
               if cfg.build.optimization.parallel == 0
               then 8
               else cfg.build.optimization.parallel
             );
-
-            # ccache
             CCACHE_DIR = lib.mkIf cfg.build.optimization.ccache "/var/cache/ccache";
             USE_CCACHE = lib.mkIf cfg.build.optimization.ccache "1";
-
-            # sccache for Rust
             RUSTC_WRAPPER = lib.mkIf cfg.build.optimization.sccache "sccache";
           };
-
-          # Systemd tmpfiles for build cache
           systemd.tmpfiles.rules = lib.mkMerge [
             (lib.mkIf cfg.build.optimization.ccache [
               "d /var/cache/ccache 0755 root root -"
@@ -461,8 +365,6 @@ in
             ])
           ];
         })
-
-        # Kernel configuration
         (lib.mkIf (cfg.enable && cfg.kernel.version != "stable") {
           boot.kernelPackages = lib.mkMerge [
             (lib.mkIf (cfg.kernel.version == "latest") pkgs.linuxPackages_latest)
@@ -472,8 +374,6 @@ in
             (lib.mkIf (cfg.kernel.version == "liquorix") pkgs.linuxPackages_lqx)
             (lib.mkIf (cfg.kernel.version == "rt") pkgs.linuxPackages_rt_latest)
           ];
-
-          # Gaming kernel optimizations
           boot.kernelParams = lib.mkIf cfg.kernel.patches.gaming [
             "preempt=voluntary"
             "processor.max_cstate=1"
@@ -481,14 +381,9 @@ in
             "intel_pstate=performance"
             "amd_pstate=guided"
           ];
-
-          # Performance kernel parameters
           boot.kernel.sysctl = lib.mkIf cfg.kernel.patches.performance {
-            # Gaming optimizations
             "vm.max_map_count" = 2147483642;
             "kernel.sched_rt_runtime_us" = -1;
-
-            # Network performance
             "net.core.rmem_max" = 134217728;
             "net.core.wmem_max" = 134217728;
             "net.ipv4.tcp_rmem" = "4096 87380 134217728";
@@ -496,96 +391,64 @@ in
             "net.core.netdev_max_backlog" = 30000;
             "net.core.netdev_budget" = 600;
             "net.ipv4.tcp_congestion_control" = "bbr";
-
-            # File system performance
             "vm.dirty_ratio" = 15;
             "vm.dirty_background_ratio" = 5;
             "vm.swappiness" = 1;
             "vm.vfs_cache_pressure" = 50;
           };
         })
-
-        # Graphics configuration
         (lib.mkIf (cfg.enable && cfg.graphics.drivers != "stable") {
-          # Mesa bleeding-edge
-          hardware.opengl = lib.mkIf (cfg.graphics.mesa.version != "stable") {
+          hardware.graphics = lib.mkIf (cfg.graphics.mesa.version != "stable") {
             extraPackages = with pkgs; [
-              # Latest Mesa drivers
               mesa.drivers
-
-              # Vulkan drivers
               amdvlk
               vulkan-loader
               vulkan-tools
               vulkan-headers
               vulkan-validation-layers
-
-              # Intel drivers
               intel-media-driver
               intel-compute-runtime
-
-              # AMD ROCm
               rocm-opencl-icd
               rocm-opencl-runtime
             ];
-
             driSupport32Bit = true;
             extraPackages32 = with pkgs.pkgsi686Linux; [
               amdvlk
             ];
           };
-
-          # NVIDIA bleeding-edge
           hardware.nvidia = lib.mkIf (cfg.graphics.drivers == "beta" || cfg.graphics.drivers == "latest") {
             package = lib.mkMerge [
               (lib.mkIf (cfg.graphics.drivers == "beta") config.boot.kernelPackages.nvidiaPackages.beta)
               (lib.mkIf (cfg.graphics.drivers == "latest") config.boot.kernelPackages.nvidiaPackages.latest)
             ];
-
             modesetting.enable = true;
-            open = false; # Proprietary for now
+            open = false;
             nvidiaSettings = true;
-
-            # Experimental features
             powerManagement.enable = true;
             powerManagement.finegrained = cfg.graphics.vulkan.experimental-features;
           };
         })
-
-        # Desktop bleeding-edge configuration
         (lib.mkIf (cfg.enable && cfg.packages.categories.desktop) {
-          # Wayland protocols
           environment.systemPackages = lib.mkIf cfg.desktop.wayland.protocols.experimental (with pkgs; [
             wayland-protocols
             wayland-scanner
             wlr-protocols
           ]);
-
-          # Modern desktop tools
           programs = {
-            # Latest shells
             zsh.enable = true;
             fish.enable = true;
-
-            # Modern utilities
             direnv.enable = true;
             fzf.enable = true;
           };
         })
-
-        # Development bleeding-edge
         (lib.mkIf (cfg.enable && cfg.packages.categories.development) {
-          # Rust toolchain
           environment.systemPackages = lib.mkIf (cfg.development.languages.rust.channel != "stable") (with pkgs; [
             (rust-bin.selectLatestNightlyWith (toolchain:
               toolchain.default.override {
                 extensions = ["rust-src" "rustfmt" "clippy" "rust-analyzer"];
               }))
           ]);
-
-          # Development services
           services = {
-            # PostgreSQL latest
             postgresql = {
               package = pkgs.postgresql_16;
               extraPlugins = with pkgs.postgresql_16.pkgs; [
@@ -594,94 +457,64 @@ in
                 pg_partman
               ];
             };
-
-            # Redis unstable
             redis.servers.default = {
               enable = true;
               package = pkgs.redis;
             };
           };
         })
-
-        # Gaming bleeding-edge
         (lib.mkIf (cfg.enable && cfg.packages.categories.gaming) {
-          # Wine bleeding-edge
           environment.systemPackages = with pkgs; [
-            # Wine variants
             (lib.mkIf (cfg.gaming.wine.version == "staging") wine-staging)
             (lib.mkIf (cfg.gaming.wine.version == "tkg") wine-tkg)
             (lib.mkIf (cfg.gaming.wine.version == "ge") wine-ge)
             (lib.mkIf (cfg.gaming.wine.version == "lutris") lutris-freeworld)
-
-            # DXVK/VKD3D
             (lib.mkIf (cfg.gaming.dxvk == "git") dxvk)
             (lib.mkIf (cfg.gaming.vkd3d == "git") vkd3d)
-
-            # Gaming tools
             gamemode
             mangohud
             goverlay
             steamtinkerlaunch
-
-            # Emulation latest
             (lib.mkIf cfg.gaming.emulation.latest yuzu-mainline)
             (lib.mkIf cfg.gaming.emulation.latest rpcs3)
             (lib.mkIf cfg.gaming.emulation.latest dolphin-emu)
           ];
-
-          # Gaming services
           programs = {
             steam.enable = true;
             gamemode.enable = true;
           };
         })
-
-        # Media production bleeding-edge
         (lib.mkIf (cfg.enable && cfg.packages.categories.media) {
           environment.systemPackages = with pkgs; [
-            # Video editing
             kdenlive
             davinci-resolve
             blender
-
-            # Audio production
             reaper
             bitwig-studio
             ardour
-
-            # Graphics
             gimp
             krita
             inkscape
-
-            # Streaming
             obs-studio
             obs-studio-plugins.wlrobs
             obs-studio-plugins.obs-vkcapture
           ];
-
-          # Audio optimizations
           services.pipewire = {
             extraConfig.pipewire = {
               "context.properties" = {
                 "default.clock.rate" = 48000;
-                "default.clock.quantum" = 64; # Ultra-low latency
+                "default.clock.quantum" = 64;
                 "default.clock.min-quantum" = 32;
                 "default.clock.max-quantum" = 1024;
               };
             };
           };
         })
-
-        # Security considerations for bleeding-edge
         (lib.mkIf cfg.enable {
-          # Firewall for development
           networking.firewall = {
-            allowedTCPPorts = [3000 8000 8080 9000]; # Development ports
-            allowedUDPPorts = [3478 19302 19303]; # WebRTC
+            allowedTCPPorts = [3000 8000 8080 9000];
+            allowedUDPPorts = [3478 19302 19303];
           };
-
-          # AppArmor profiles for security
           security.apparmor = {
             enable = true;
             packages = with pkgs; [
@@ -690,7 +523,7 @@ in
           };
         })
       ];
-
-    # Dependencies
     dependencies = ["core" "hardware"];
+  }) {
+    inherit config lib pkgs inputs;
   }

@@ -5,67 +5,55 @@
   inputs,
   ...
 }: let
-  unified-lib = config.unified-lib or (import ../../../lib {inherit inputs lib;});
+  unified-lib = import ../../../lib {inherit inputs lib;};
 in
-  unified-lib.mkUnifiedModule {
+  (unified-lib.mkUnifiedModule {
     name = "packages-server";
     description = "Server applications and services for hosting, virtualization, and network services";
     category = "packages";
-
     options = with lib; {
       enable = mkEnableOption "server package set";
-
       containers = {
         enable = mkEnableOption "container runtime and orchestration" // {default = true;};
-
         docker = {
           enable = mkEnableOption "Docker container platform" // {default = true;};
           compose = mkEnableOption "Docker Compose orchestration" // {default = true;};
           buildx = mkEnableOption "Docker Buildx multi-platform builds";
           registry = mkEnableOption "local Docker registry";
         };
-
         podman = {
           enable = mkEnableOption "Podman rootless containers";
           compose = mkEnableOption "Podman Compose compatibility";
           kubernetes = mkEnableOption "Podman Kubernetes integration";
         };
-
         kubernetes = {
           enable = mkEnableOption "Kubernetes container orchestration";
           k3s = mkEnableOption "K3s lightweight Kubernetes";
           tools = mkEnableOption "Kubernetes management tools";
         };
       };
-
       virtualization = {
         enable = mkEnableOption "virtualization platforms";
-
         libvirtd = {
           enable = mkEnableOption "libvirt virtualization management" // {default = true;};
           qemu = mkEnableOption "QEMU virtual machines" // {default = true;};
           networking = mkEnableOption "virtual networking support" // {default = true;};
           storage = mkEnableOption "virtual storage management";
         };
-
         virt-manager = mkEnableOption "Virtual Machine Manager GUI";
         vagrant = mkEnableOption "Vagrant development environments";
         virtualbox = mkEnableOption "VirtualBox virtualization";
       };
-
       media-server = {
         enable = mkEnableOption "media server applications";
-
         qbittorrent = {
           enable = mkEnableOption "qBittorrent torrent client" // {default = true;};
           web-ui = mkEnableOption "qBittorrent web interface" // {default = true;};
           vpn-binding = mkEnableOption "VPN interface binding";
         };
-
         jellyfin = mkEnableOption "Jellyfin media server";
         plex = mkEnableOption "Plex media server";
         emby = mkEnableOption "Emby media server";
-
         arr-stack = {
           enable = mkEnableOption "*arr media automation stack" // {default = true;};
           sonarr = mkEnableOption "Sonarr TV series management" // {default = true;};
@@ -76,17 +64,14 @@ in
           readarr = mkEnableOption "Readarr ebook management";
         };
       };
-
       file-sharing = {
         enable = mkEnableOption "file sharing services";
-
         smb = {
           enable = mkEnableOption "SMB/CIFS file sharing" // {default = true;};
           server = mkEnableOption "Samba SMB server" // {default = true;};
           client = mkEnableOption "SMB client tools";
           time-machine = mkEnableOption "macOS Time Machine support";
         };
-
         wsdd = {
           enable = mkEnableOption "Windows Service Discovery Daemon" // {default = true;};
           workgroup = mkOption {
@@ -95,52 +80,40 @@ in
             description = "SMB workgroup name";
           };
         };
-
         nfs = mkEnableOption "Network File System (NFS)";
         ftp = mkEnableOption "FTP server";
         sftp = mkEnableOption "SFTP server";
       };
-
       web-services = {
         enable = mkEnableOption "web server and related services";
-
         nginx = mkEnableOption "Nginx web server";
         apache = mkEnableOption "Apache HTTP server";
         caddy = mkEnableOption "Caddy web server with automatic HTTPS";
-
         reverse-proxy = mkEnableOption "reverse proxy configuration";
         ssl-certificates = mkEnableOption "automatic SSL certificate management";
       };
-
       databases = {
         enable = mkEnableOption "database servers";
-
         postgresql = mkEnableOption "PostgreSQL database";
         mysql = mkEnableOption "MySQL/MariaDB database";
         mongodb = mkEnableOption "MongoDB document database";
         redis = mkEnableOption "Redis key-value store";
         sqlite = mkEnableOption "SQLite embedded database" // {default = true;};
       };
-
       monitoring = {
         enable = mkEnableOption "monitoring and observability tools";
-
         prometheus = mkEnableOption "Prometheus metrics collection";
         grafana = mkEnableOption "Grafana dashboards";
         loki = mkEnableOption "Loki log aggregation";
         node-exporter = mkEnableOption "Prometheus Node Exporter";
-
         uptime = mkEnableOption "uptime monitoring tools";
         log-analysis = mkEnableOption "log analysis and aggregation";
       };
-
       security = {
         enable = mkEnableOption "security and hardening tools" // {default = true;};
-
         fail2ban = mkEnableOption "Fail2ban intrusion prevention" // {default = true;};
         ufw = mkEnableOption "Uncomplicated Firewall";
         iptables = mkEnableOption "iptables firewall rules";
-
         vpn = {
           wireguard = mkEnableOption "WireGuard VPN server";
           openvpn = mkEnableOption "OpenVPN server";
@@ -148,7 +121,6 @@ in
         };
       };
     };
-
     config = {
       cfg,
       config,
@@ -156,166 +128,122 @@ in
       pkgs,
     }:
       lib.mkIf cfg.enable {
-        # Server packages
         environment.systemPackages = with pkgs;
           lib.flatten [
-            # Container tools
             (lib.optionals cfg.containers.docker.enable [
               docker
             ])
-
             (lib.optionals cfg.containers.docker.compose [
               docker-compose
             ])
-
             (lib.optionals cfg.containers.docker.buildx [
               docker-buildx
             ])
-
             (lib.optionals cfg.containers.podman.enable [
               podman
               podman-compose
               buildah
               skopeo
             ])
-
             (lib.optionals cfg.containers.kubernetes.tools [
               kubectl
               kubernetes-helm
               k9s
               stern
             ])
-
-            # Virtualization
             (lib.optionals cfg.virtualization.libvirtd.enable [
               libvirt
               qemu
               qemu_kvm
             ])
-
             (lib.optionals cfg.virtualization.virt-manager [
               virt-manager
               virt-viewer
             ])
-
             (lib.optionals cfg.virtualization.vagrant [
               vagrant
             ])
-
-            # Media server stack
             (lib.optionals cfg.media-server.qbittorrent.enable [
               qbittorrent-nox
             ])
-
             (lib.optionals cfg.media-server.jellyfin [
               jellyfin
               jellyfin-web
               jellyfin-ffmpeg
             ])
-
-            # *arr stack
             (lib.optionals cfg.media-server.arr-stack.sonarr [
               sonarr
             ])
-
             (lib.optionals cfg.media-server.arr-stack.radarr [
               radarr
             ])
-
             (lib.optionals cfg.media-server.arr-stack.prowlarr [
               prowlarr
             ])
-
             (lib.optionals cfg.media-server.arr-stack.bazarr [
               bazarr
             ])
-
-            # File sharing
             (lib.optionals cfg.file-sharing.smb.enable [
               samba
               cifs-utils
             ])
-
             (lib.optionals cfg.file-sharing.wsdd.enable [
               wsdd
             ])
-
             (lib.optionals cfg.file-sharing.nfs [
               nfs-utils
             ])
-
-            # Web servers
             (lib.optionals cfg.web-services.nginx [
               nginx
             ])
-
             (lib.optionals cfg.web-services.apache [
               httpd
             ])
-
             (lib.optionals cfg.web-services.caddy [
               caddy
             ])
-
-            # Databases
             (lib.optionals cfg.databases.postgresql [
               postgresql
               pgcli
             ])
-
             (lib.optionals cfg.databases.mysql [
               mariadb
               mycli
             ])
-
             (lib.optionals cfg.databases.mongodb [
               mongodb
             ])
-
             (lib.optionals cfg.databases.redis [
               redis
             ])
-
             (lib.optionals cfg.databases.sqlite [
               sqlite
               sqlitebrowser
             ])
-
-            # Monitoring
             (lib.optionals cfg.monitoring.prometheus [
               prometheus
             ])
-
             (lib.optionals cfg.monitoring.grafana [
               grafana
             ])
-
             (lib.optionals cfg.monitoring.node-exporter [
               prometheus-node-exporter
             ])
-
-            # Security tools
             (lib.optionals cfg.security.fail2ban [
               fail2ban
             ])
-
             (lib.optionals cfg.security.ufw [
               ufw
             ])
-
             (lib.optionals cfg.security.vpn.wireguard [
               wireguard-tools
             ])
-
             (lib.optionals cfg.security.vpn.openvpn [
               openvpn
             ])
-
             (lib.optionals cfg.security.vpn.tailscale [
               tailscale
             ])
-
-            # Server utilities
             [
               htop
               iotop
@@ -330,10 +258,7 @@ in
               nano
             ]
           ];
-
-        # Virtualization services
         virtualisation = lib.mkMerge [
-          # Docker
           (lib.mkIf cfg.containers.docker.enable {
             docker = {
               enable = true;
@@ -344,8 +269,6 @@ in
               };
             };
           })
-
-          # Podman
           (lib.mkIf cfg.containers.podman.enable {
             podman = {
               enable = true;
@@ -356,11 +279,8 @@ in
                 dates = "weekly";
               };
             };
-
             containers.enable = true;
           })
-
-          # libvirt
           (lib.mkIf cfg.virtualization.libvirtd.enable {
             libvirtd = {
               enable = true;
@@ -373,10 +293,7 @@ in
             };
           })
         ];
-
-        # System services
         services = lib.mkMerge [
-          # File sharing services
           (lib.mkIf cfg.file-sharing.smb.server {
             samba = {
               enable = true;
@@ -394,8 +311,6 @@ in
               };
             };
           })
-
-          # Windows Service Discovery
           (lib.mkIf cfg.file-sharing.wsdd.enable {
             wsdd = {
               enable = true;
@@ -403,8 +318,6 @@ in
               workgroup = cfg.file-sharing.wsdd.workgroup;
             };
           })
-
-          # Web services
           (lib.mkIf cfg.web-services.nginx {
             nginx = {
               enable = true;
@@ -414,8 +327,6 @@ in
               recommendedProxySettings = true;
             };
           })
-
-          # Database services
           (lib.mkIf cfg.databases.postgresql {
             postgresql = {
               enable = true;
@@ -425,7 +336,6 @@ in
               '';
             };
           })
-
           (lib.mkIf cfg.databases.redis {
             redis.servers.default = {
               enable = true;
@@ -433,8 +343,6 @@ in
               port = 6379;
             };
           })
-
-          # Monitoring services
           (lib.mkIf cfg.monitoring.prometheus {
             prometheus = {
               enable = true;
@@ -451,7 +359,6 @@ in
               ];
             };
           })
-
           (lib.mkIf cfg.monitoring.node-exporter {
             prometheus.exporters.node = {
               enable = true;
@@ -469,7 +376,6 @@ in
               ];
             };
           })
-
           (lib.mkIf cfg.monitoring.grafana {
             grafana = {
               enable = true;
@@ -481,8 +387,6 @@ in
               };
             };
           })
-
-          # Security services
           (lib.mkIf cfg.security.fail2ban {
             fail2ban = {
               enable = true;
@@ -496,63 +400,41 @@ in
               ];
             };
           })
-
-          # VPN services
           (lib.mkIf cfg.security.vpn.tailscale {
             tailscale.enable = true;
           })
         ];
-
-        # Networking configuration
         networking.firewall = {
           allowedTCPPorts = lib.flatten [
-            # Web services
             (lib.optionals cfg.web-services.nginx [80 443])
             (lib.optionals cfg.web-services.apache [80 443])
             (lib.optionals cfg.web-services.caddy [80 443])
-
-            # File sharing
             (lib.optionals cfg.file-sharing.smb.enable [139 445])
             (lib.optionals cfg.file-sharing.nfs [111 2049])
-
-            # Media servers
             (lib.optionals cfg.media-server.jellyfin [8096 8920])
             (lib.optionals cfg.media-server.qbittorrent.web-ui [8080])
-
-            # Monitoring
             (lib.optionals cfg.monitoring.prometheus [9090])
             (lib.optionals cfg.monitoring.grafana [3000])
             (lib.optionals cfg.monitoring.node-exporter [9100])
-
-            # Databases (local network only)
             (lib.optionals cfg.databases.postgresql [5432])
             (lib.optionals cfg.databases.mysql [3306])
             (lib.optionals cfg.databases.redis [6379])
           ];
-
           allowedUDPPorts = lib.flatten [
-            # File sharing
             (lib.optionals cfg.file-sharing.smb.enable [137 138])
             (lib.optionals cfg.file-sharing.wsdd.enable [3702])
-
-            # VPN
             (lib.optionals cfg.security.vpn.wireguard [51820])
           ];
         };
-
-        # User groups for server services
         users.extraGroups = lib.mkMerge [
           (lib.mkIf cfg.containers.docker.enable {
             docker = {};
           })
-
           (lib.mkIf cfg.virtualization.libvirtd.enable {
             libvirtd = {};
             kvm = {};
           })
         ];
-
-        # Environment variables
         environment.variables = {
           SERVER_MODE = "1";
           CONTAINER_RUNTIME =
@@ -563,7 +445,7 @@ in
             else "none";
         };
       };
-
-    # Dependencies
     dependencies = ["core" "security"];
+  }) {
+    inherit config lib pkgs inputs;
   }

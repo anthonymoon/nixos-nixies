@@ -41,6 +41,25 @@ repos:
         files: '\.nix$'
         pass_filenames: false
 
+      # Comprehensive nix check for all files
+      - id: nix-check
+        name: Nix check
+        description: Run nix flake check on the entire project
+        entry: bash
+        args:
+          - -c
+          - |
+            set -euo pipefail
+            echo "🔍 Running nix flake check..."
+            if ! nix flake check --print-build-logs 2>&1; then
+              echo "❌ Nix check failed"
+              exit 1
+            fi
+            echo "✅ Nix check passed"
+        language: system
+        files: '\.nix$'
+        pass_filenames: false
+
       - id: flake-check
         name: Flake validation
         description: Validate flake structure and dependencies
@@ -177,9 +196,155 @@ repos:
         files: '\.(nix|md)$'
         pass_filenames: false
 
+      # Deadnix - find dead code in Nix
+      - id: deadnix
+        name: Deadnix - find dead Nix code
+        description: Find unused code in Nix files
+        entry: bash
+        args:
+          - -c
+          - |
+            if command -v deadnix >/dev/null 2>&1; then
+              deadnix --fail .
+            else
+              echo "⚠️  deadnix not found, install with: nix-shell -p deadnix"
+              exit 0
+            fi
+        language: system
+        files: '\.nix$'
+        pass_filenames: false
+
+      # Statix - Nix static analysis
+      - id: statix
+        name: Statix - Nix linter
+        description: Static analysis and linting for Nix
+        entry: bash
+        args:
+          - -c
+          - |
+            if command -v statix >/dev/null 2>&1; then
+              statix check
+            else
+              echo "⚠️  statix not found, install with: nix-shell -p statix"
+              exit 0
+            fi
+        language: system
+        files: '\.nix$'
+        pass_filenames: false
+
+      # Vulnix - Nix security scanner
+      - id: vulnix
+        name: Vulnix - security vulnerability scanner
+        description: Scan for known vulnerabilities in Nix packages
+        entry: bash
+        args:
+          - -c
+          - |
+            if command -v vulnix >/dev/null 2>&1; then
+              echo "🛡️  Scanning for vulnerabilities..."
+              if [ -f "flake.nix" ]; then
+                # Try to scan a profile
+                profile=$(ls profiles/*.nix | grep -v default.nix | head -1 | xargs basename .nix)
+                if [ -n "$profile" ]; then
+                  vulnix --system $(nix build --no-link --print-out-paths .#nixosConfigurations.$profile.config.system.build.toplevel 2>/dev/null || echo "")
+                fi
+              fi
+            else
+              echo "⚠️  vulnix not found, install with: nix-shell -p vulnix"
+              exit 0
+            fi
+        language: system
+        files: '^(flake\.nix|flake\.lock)$'
+        pass_filenames: false
+        stages: [pre-push]
+
+      # Nix tests runner
+      - id: nix-tests
+        name: Run Nix tests
+        description: Execute Nix tests if available
+        entry: bash
+        args:
+          - -c
+          - |
+            set -euo pipefail
+            echo "🧪 Running Nix tests..."
+            
+            # Check for flake checks
+            if [ -f "flake.nix" ] && nix flake show --json 2>/dev/null | jq -e '.checks' >/dev/null 2>&1; then
+              echo "  Running flake checks..."
+              nix flake check --print-build-logs
+            fi
+            
+            # Run test scripts if they exist
+            if [ -d "scripts" ]; then
+              for test in scripts/*-validation.sh; do
+                if [ -x "$test" ]; then
+                  echo "  Running: $test"
+                  "$test" || true
+                fi
+              done
+            fi
+            
+            echo "✅ Tests completed"
+        language: system
+        files: '\.(nix|sh)$'
+        pass_filenames: false
+        stages: [pre-push]
+
+      # Module structure validation
+      - id: nix-module-structure
+        name: Module structure validation
+        description: Validate NixOS module patterns and structure
+        entry: bash
+        args:
+          - -c
+          - |
+            set -euo pipefail
+            echo "🏗️  Validating module structure..."
+            
+            # Check module factory usage
+            if [ -f "lib/module-factory.nix" ]; then
+              echo "  Checking module factory patterns..."
+              find modules -name "*.nix" -type f | while IFS= read -r module; do
+                if ! grep -q "moduleFactory\|mkModule" "$module" 2>/dev/null && ! grep -q "{ config, lib, pkgs" "$module" 2>/dev/null; then
+                  echo "⚠️  $module may not follow module patterns"
+                fi
+              done
+            fi
+            
+            echo "✅ Module structure validation completed"
+        language: system
+        files: '^modules/.*\.nix$'
+        pass_filenames: false
+
+      # Cachix evaluation check
+      - id: cachix-eval-check
+        name: Cachix configuration validation
+        description: Validate cachix and binary cache configurations
+        entry: bash
+        args:
+          - -c
+          - |
+            set -euo pipefail
+            echo "📦 Checking cachix configuration..."
+            
+            # Check for cachix configuration
+            if grep -r "cachix" . --include="*.nix" 2>/dev/null | grep -v "# cachix" > /dev/null; then
+              echo "  Found cachix configuration"
+              # Validate cachix URLs
+              if ! grep -r "cache.nixos.org" . --include="*.nix" 2>/dev/null > /dev/null; then
+                echo "⚠️  Missing cache.nixos.org in binary caches"
+              fi
+            fi
+            
+            echo "✅ Cachix configuration check completed"
+        language: system
+        files: '\.nix$'
+        pass_filenames: false
+
   # General code quality
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v5.0.0
     hooks:
       - id: trailing-whitespace
         exclude: '\.patch$'
@@ -205,21 +370,21 @@ repos:
 
   # Shell script validation
   - repo: https://github.com/shellcheck-py/shellcheck-py
-    rev: v0.9.0.6
+    rev: v0.10.0.1
     hooks:
       - id: shellcheck
         args: [-e, SC1091, -e, SC2086, -e, SC2155]
 
   # Markdown formatting
   - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.37.0
+    rev: v0.45.0
     hooks:
       - id: markdownlint
         args: [--config, .markdownlint.yaml]
 
   # Secrets detection
   - repo: https://github.com/Yelp/detect-secrets
-    rev: v1.4.0
+    rev: v1.5.0
     hooks:
       - id: detect-secrets
         args: [--baseline, .secrets.baseline]

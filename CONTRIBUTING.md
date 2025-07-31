@@ -5,16 +5,19 @@ Thank you for your interest in contributing to NixOS Unified!
 ## Development Setup
 
 1. Run the development setup script:
+
    ```bash
    ./scripts/dev-setup.sh
    ```
 
 2. Enter the development environment:
+
    ```bash
    nix develop
    ```
 
 3. Install pre-commit hooks:
+
    ```bash
    just install-hooks
    ```

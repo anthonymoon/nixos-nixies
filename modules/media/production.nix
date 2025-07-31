@@ -5,25 +5,21 @@
   inputs,
   ...
 }: let
-  unified-lib = config.unified-lib or (import ../../lib {inherit inputs lib;});
+  unified-lib = import ../../lib {inherit inputs lib;};
 in
-  unified-lib.mkUnifiedModule {
+  (unified-lib.mkUnifiedModule {
     name = "media-production";
     description = "Comprehensive media production suite for video, audio, graphics, and content creation";
     category = "media";
-
     options = with lib; {
       enable = mkEnableOption "media production capabilities";
-
       video = {
         enable = mkEnableOption "video production and editing" // {default = true;};
-
         editing = {
           professional = mkEnableOption "professional video editing suites";
           free = mkEnableOption "free and open-source video editors" // {default = true;};
           web = mkEnableOption "web-based video editing tools";
         };
-
         software = {
           davinci-resolve = mkEnableOption "DaVinci Resolve professional editor";
           kdenlive = mkEnableOption "KDEnlive non-linear editor" // {default = true;};
@@ -34,7 +30,6 @@ in
           olive = mkEnableOption "Olive professional video editor";
           pitivi = mkEnableOption "Pitivi video editor";
         };
-
         encoding = {
           hardware = mkEnableOption "hardware-accelerated encoding" // {default = true;};
           codecs = {
@@ -44,21 +39,18 @@ in
             vp9 = mkEnableOption "VP9 codec support" // {default = true;};
             prores = mkEnableOption "Apple ProRes codec support";
           };
-
           quality = mkOption {
             type = types.enum ["fast" "balanced" "quality" "lossless"];
             default = "balanced";
             description = "Default encoding quality preset";
           };
         };
-
         formats = {
           professional = mkEnableOption "professional video formats (ProRes, DNxHD, etc.)";
           consumer = mkEnableOption "consumer video formats (MP4, AVI, etc.)" // {default = true;};
           streaming = mkEnableOption "streaming formats optimization" // {default = true;};
           archive = mkEnableOption "archival formats (FFV1, etc.)";
         };
-
         effects = {
           color-grading = mkEnableOption "advanced color grading tools";
           motion-graphics = mkEnableOption "motion graphics and compositing";
@@ -66,17 +58,14 @@ in
           transitions = mkEnableOption "transition effects library";
         };
       };
-
       audio = {
         enable = mkEnableOption "audio production and editing" // {default = true;};
-
         production = {
           professional = mkEnableOption "professional audio production suites";
           podcast = mkEnableOption "podcast production tools" // {default = true;};
           music = mkEnableOption "music production and composition";
           voice = mkEnableOption "voice recording and processing" // {default = true;};
         };
-
         software = {
           reaper = mkEnableOption "REAPER digital audio workstation";
           ardour = mkEnableOption "Ardour professional DAW" // {default = true;};
@@ -88,7 +77,6 @@ in
           zrythm = mkEnableOption "Zrythm digital audio workstation";
           bitwig = mkEnableOption "Bitwig Studio";
         };
-
         plugins = {
           ladspa = mkEnableOption "LADSPA audio plugins" // {default = true;};
           lv2 = mkEnableOption "LV2 audio plugins" // {default = true;};
@@ -96,21 +84,18 @@ in
           vst3 = mkEnableOption "VST3 plugin support";
           clap = mkEnableOption "CLAP plugin support";
         };
-
         synthesis = {
           synthesizers = mkEnableOption "software synthesizers";
           samplers = mkEnableOption "audio samplers";
           drum-machines = mkEnableOption "drum machine software";
           virtual-instruments = mkEnableOption "virtual instrument libraries";
         };
-
         processing = {
           realtime = mkEnableOption "real-time audio processing" // {default = true;};
           noise-reduction = mkEnableOption "noise reduction and cleanup";
           mastering = mkEnableOption "audio mastering tools";
           restoration = mkEnableOption "audio restoration tools";
         };
-
         formats = {
           lossless = mkEnableOption "lossless audio formats (FLAC, WAV)" // {default = true;};
           compressed = mkEnableOption "compressed audio formats (MP3, OGG)" // {default = true;};
@@ -118,10 +103,8 @@ in
           surround = mkEnableOption "surround sound format support";
         };
       };
-
       graphics = {
         enable = mkEnableOption "graphics design and digital art" // {default = true;};
-
         design = {
           raster = mkEnableOption "raster graphics editing" // {default = true;};
           vector = mkEnableOption "vector graphics design" // {default = true;};
@@ -129,7 +112,6 @@ in
           photo-editing = mkEnableOption "photo editing and manipulation" // {default = true;};
           ui-design = mkEnableOption "UI/UX design tools";
         };
-
         software = {
           gimp = mkEnableOption "GIMP raster graphics editor" // {default = true;};
           krita = mkEnableOption "Krita digital painting application" // {default = true;};
@@ -142,14 +124,12 @@ in
           hugin = mkEnableOption "Hugin panorama stitcher";
           scribus = mkEnableOption "Scribus desktop publishing";
         };
-
         formats = {
           raw = mkEnableOption "camera RAW format support" // {default = true;};
           professional = mkEnableOption "professional graphics formats (PSD, AI, etc.)";
           web = mkEnableOption "web graphics optimization" // {default = true;};
           print = mkEnableOption "print-ready format support";
         };
-
         color = {
           management = mkEnableOption "color management system" // {default = true;};
           calibration = mkEnableOption "monitor calibration tools";
@@ -157,10 +137,8 @@ in
           wide-gamut = mkEnableOption "wide color gamut support";
         };
       };
-
       modeling = {
         enable = mkEnableOption "3D modeling and animation";
-
         software = {
           blender = mkEnableOption "Blender 3D creation suite" // {default = true;};
           freecad = mkEnableOption "FreeCAD parametric 3D modeler";
@@ -169,7 +147,6 @@ in
           wings3d = mkEnableOption "Wings 3D subdivision modeler";
           art-of-illusion = mkEnableOption "Art of Illusion 3D studio";
         };
-
         features = {
           sculpting = mkEnableOption "3D sculpting capabilities";
           animation = mkEnableOption "3D animation tools" // {default = true;};
@@ -177,7 +154,6 @@ in
           simulation = mkEnableOption "physics simulation";
           rendering = mkEnableOption "3D rendering engines" // {default = true;};
         };
-
         formats = {
           interchange = mkEnableOption "3D format interchange (OBJ, FBX, etc.)" // {default = true;};
           cad = mkEnableOption "CAD format support";
@@ -185,17 +161,14 @@ in
           printing = mkEnableOption "3D printing format support";
         };
       };
-
       streaming = {
         enable = mkEnableOption "live streaming and content creation";
-
         software = {
           obs = mkEnableOption "OBS Studio streaming software" // {default = true;};
           streamlabs = mkEnableOption "Streamlabs OBS";
           xsplit = mkEnableOption "XSplit broadcasting software";
           wirecast = mkEnableOption "Wirecast live streaming";
         };
-
         platforms = {
           twitch = mkEnableOption "Twitch streaming optimization";
           youtube = mkEnableOption "YouTube streaming optimization";
@@ -203,7 +176,6 @@ in
           linkedin = mkEnableOption "LinkedIn Live streaming";
           custom-rtmp = mkEnableOption "Custom RTMP server support";
         };
-
         features = {
           multi-camera = mkEnableOption "multi-camera streaming setup";
           green-screen = mkEnableOption "chroma key (green screen) support";
@@ -212,7 +184,6 @@ in
           overlays = mkEnableOption "streaming overlays and graphics";
           chatbots = mkEnableOption "streaming chatbot integration";
         };
-
         hardware = {
           capture-cards = mkEnableOption "capture card support";
           webcams = mkEnableOption "webcam optimization" // {default = true;};
@@ -220,52 +191,43 @@ in
           lighting = mkEnableOption "lighting control integration";
         };
       };
-
       collaboration = {
         enable = mkEnableOption "collaborative content creation tools";
-
         version-control = {
           git-lfs = mkEnableOption "Git LFS for large media files" // {default = true;};
           perforce = mkEnableOption "Perforce version control";
           subversion = mkEnableOption "Subversion version control";
         };
-
         cloud = {
           sync = mkEnableOption "cloud storage synchronization";
           backup = mkEnableOption "automated cloud backup";
           sharing = mkEnableOption "cloud-based file sharing";
         };
-
         review = {
           annotation = mkEnableOption "media annotation and review tools";
           approval = mkEnableOption "approval workflow systems";
           feedback = mkEnableOption "feedback and comment systems";
         };
       };
-
       optimization = {
         enable = mkEnableOption "media production optimizations" // {default = true;};
-
         storage = {
           fast-storage = mkEnableOption "fast storage optimization for media files";
           cache-drives = mkEnableOption "dedicated cache drive configuration";
           network-storage = mkEnableOption "network-attached storage optimization";
           raid = mkEnableOption "RAID configuration for media production";
         };
-
         memory = {
           large-files = mkEnableOption "large file handling optimization";
           preview-cache = mkEnableOption "preview cache optimization";
           undo-history = mkEnableOption "extensive undo history support";
         };
-
         gpu = {
           acceleration = mkEnableOption "GPU acceleration for media tasks" // {default = true;};
           compute = mkEnableOption "GPU compute for effects processing";
           multiple-gpu = mkEnableOption "multi-GPU rendering support";
           ai-acceleration = mkEnableOption "AI-accelerated media processing";
         };
-
         networking = {
           high-bandwidth = mkEnableOption "high-bandwidth network optimization";
           low-latency = mkEnableOption "low-latency streaming optimization";
@@ -273,7 +235,6 @@ in
         };
       };
     };
-
     config = {
       cfg,
       config,
@@ -281,98 +242,66 @@ in
       pkgs,
     }:
       lib.mkMerge [
-        # Base media production configuration
         (lib.mkIf cfg.enable {
-          # Essential media packages
           environment.systemPackages = with pkgs; [
-            # Media utilities
             ffmpeg-full
             mediainfo
             exiftool
-
-            # File format support
-            libheif # HEIF/HEIC support
-            libavif # AVIF support
-
-            # System utilities
+            libheif
+            libavif
             htop
             iotop
             tree
             rsync
           ];
-
-          # Media groups
           users.extraGroups = {
             media = {gid = 2001;};
             audio = {gid = 2002;};
             video = {gid = 2003;};
           };
-
-          # Essential services
-          services.udisks2.enable = true; # For removable media
-
-          # Font packages for media production
+          services.udisks2.enable = true;
           fonts.packages = with pkgs; [
-            # Professional fonts
             liberation_ttf
             dejavu_fonts
             source-sans-pro
             source-serif-pro
             source-code-pro
-
-            # Design fonts
             inter
             roboto
             open-sans
             lato
-
-            # Icon fonts
             font-awesome
             material-icons
           ];
         })
-
-        # Video Production Configuration
         (lib.mkIf cfg.video.enable {
           environment.systemPackages = with pkgs;
             [
-              # Video editing software
               (lib.mkIf cfg.video.software.kdenlive kdenlive)
               (lib.mkIf cfg.video.software.blender blender)
               (lib.mkIf cfg.video.software.openshot openshot-qt)
               (lib.mkIf cfg.video.software.shotcut shotcut)
               (lib.mkIf cfg.video.software.flowblade flowblade)
               (lib.mkIf cfg.video.software.pitivi pitivi)
-
-              # Video utilities
-              handbrake # Video transcoder
-              mkvtoolnix # MKV tools
-              dvdauthor # DVD authoring
-
-              # Codecs and libraries
+              handbrake
+              mkvtoolnix
+              dvdauthor
               x264
               x265
-              libvpx # VP8/VP9
-              libaom # AV1
-
-              # Hardware acceleration
+              libvpx
+              libaom
               intel-media-driver
               vaapiIntel
               libva-utils
-
-              # Video analysis tools
               mediainfo-gui
-              videomass # FFmpeg GUI
+              videomass
             ]
             ++ lib.optionals cfg.video.software.davinci-resolve [
               davinci-resolve
             ]
             ++ lib.optionals cfg.video.encoding.codecs.prores [
-              # ProRes support (if available)
             ];
-
-          # Video hardware acceleration
-          hardware.opengl = {
+          hardware.graphics = {
             extraPackages = with pkgs; [
               intel-media-driver
               vaapiIntel
@@ -381,8 +310,6 @@ in
               intel-compute-runtime
             ];
           };
-
-          # FFmpeg with hardware acceleration
           nixpkgs.config.packageOverrides = pkgs: {
             ffmpeg = pkgs.ffmpeg-full.override {
               withVaapi = cfg.video.encoding.hardware;
@@ -390,44 +317,29 @@ in
               withNvenc = cfg.video.encoding.hardware;
             };
           };
-
-          # Video-specific environment variables
           environment.variables = {
             LIBVA_DRIVER_NAME = lib.mkIf cfg.video.encoding.hardware "iHD";
             VDPAU_DRIVER = lib.mkIf cfg.video.encoding.hardware "va_gl";
           };
         })
-
-        # Audio Production Configuration
         (lib.mkIf cfg.audio.enable {
           environment.systemPackages = with pkgs;
             [
-              # Audio editing software
               (lib.mkIf cfg.audio.software.ardour ardour)
               (lib.mkIf cfg.audio.software.audacity audacity)
               (lib.mkIf cfg.audio.software.lmms lmms)
               (lib.mkIf cfg.audio.software.rosegarden rosegarden)
               (lib.mkIf cfg.audio.software.qtractor qtractor)
-
-              # Audio utilities
-              sox # Sound processing
-              lame # MP3 encoding
-              flac # FLAC encoding
-              opus-tools # Opus encoding
-              vorbis-tools # Ogg Vorbis tools
-
-              # Audio analysis
+              sox
+              lame
+              flac
+              opus-tools
+              vorbis-tools
               audacity
               spectacle-audio-analyzer
-
-              # JACK audio tools
               qjackctl
               jack2
-
-              # Plugin hosts
               carla
-
-              # Audio format support
               alsa-utils
               pulseaudio-ctl
               pavucontrol
@@ -438,7 +350,6 @@ in
             ++ lib.optionals cfg.audio.software.bitwig [
               bitwig-studio
             ]
-            # Audio plugins
             ++ lib.optionals cfg.audio.plugins.ladspa [
               ladspaPlugins
               caps
@@ -454,22 +365,17 @@ in
               mod-distortion
               x42-plugins
             ];
-
-          # Real-time audio configuration
           services.pipewire = lib.mkIf cfg.audio.processing.realtime {
             extraConfig.pipewire = {
               "context.properties" = {
                 "default.clock.rate" = 48000;
-                "default.clock.quantum" = 256; # Low latency for production
+                "default.clock.quantum" = 256;
                 "default.clock.min-quantum" = 64;
                 "default.clock.max-quantum" = 2048;
               };
             };
-
             jack.enable = true;
           };
-
-          # JACK configuration
           services.jack = lib.mkIf cfg.audio.processing.realtime {
             jackd.enable = true;
             alsa.enable = true;
@@ -477,29 +383,25 @@ in
               enable = true;
               dmixConfig = ''
                 pcm.amix {
-                  type dmix
-                  ipc_key 12345
-                  slave {
-                    pcm "hw:0,0"
-                    period_time 0
-                    period_size 256
-                    buffer_time 0
-                    buffer_size 2048
-                    rate 48000
-                  }
-                  bindings {
-                    0 0
-                    1 1
-                  }
+                type dmix
+                ipc_key 12345
+                slave {
+                pcm "hw:0,0"
+                period_time 0
+                period_size 256
+                buffer_time 0
+                buffer_size 2048
+                rate 48000
+                }
+                bindings {
+                0 0
+                1 1
+                }
                 }
               '';
             };
           };
-
-          # Real-time kernel for professional audio
           security.rtkit.enable = true;
-
-          # Audio group configuration
           users.users =
             lib.mapAttrs
             (
@@ -512,11 +414,8 @@ in
             )
             config.users.users;
         })
-
-        # Graphics and Design Configuration
         (lib.mkIf cfg.graphics.enable {
           environment.systemPackages = with pkgs; [
-            # Graphics software
             (lib.mkIf cfg.graphics.software.gimp gimp-with-plugins)
             (lib.mkIf cfg.graphics.software.krita krita)
             (lib.mkIf cfg.graphics.software.inkscape inkscape-with-extensions)
@@ -527,148 +426,88 @@ in
             (lib.mkIf cfg.graphics.software.luminance-hdr luminance-hdr)
             (lib.mkIf cfg.graphics.software.hugin hugin)
             (lib.mkIf cfg.graphics.software.scribus scribus)
-
-            # Graphics utilities
             imagemagick
             graphicsmagick
             optipng
             jpegoptim
             pngcrush
-
-            # Color management
             argyllcms
             displaycal
-
-            # Font tools
             fontforge
             fonttools
-
-            # Vector graphics utilities
-            potrace # Bitmap to vector tracing
+            potrace
             autotrace
-
-            # Photo management
             shotwell
             gwenview
             nomacs
           ];
-
-          # Color management
           services.colord.enable = cfg.graphics.color.management;
-
-          # Graphics acceleration
-          hardware.opengl = {
+          hardware.graphics = {
             enable = true;
             driSupport = true;
             driSupport32Bit = true;
-
             extraPackages = with pkgs; [
-              # Intel graphics
               intel-media-driver
               vaapiIntel
               intel-compute-runtime
-
-              # AMD graphics
               amdvlk
               rocm-opencl-icd
-
-              # OpenCL
               opencl-headers
               opencl-info
               clinfo
             ];
           };
-
-          # Environment variables for graphics
           environment.variables = {
-            # OpenCL
             OPENCL_VENDOR_PATH = "${pkgs.ocl-icd}/etc/OpenCL/vendors";
-
-            # Color management
             COLOR_PROFILE_DIR = lib.mkIf cfg.graphics.color.management "/run/current-system/sw/share/color/icc";
           };
         })
-
-        # 3D Modeling Configuration
         (lib.mkIf cfg.modeling.enable {
           environment.systemPackages = with pkgs; [
-            # 3D software
             (lib.mkIf cfg.modeling.software.blender blender)
             (lib.mkIf cfg.modeling.software.freecad freecad)
             (lib.mkIf cfg.modeling.software.openscad openscad)
             (lib.mkIf cfg.modeling.software.meshlab meshlab)
             (lib.mkIf cfg.modeling.software.wings3d wings3d)
-
-            # 3D utilities
             meshlab
             cloudcompare
-
-            # 3D printing
             cura
             prusa-slicer
             openscad
-
-            # CAD utilities
             librecad
             qcad
-
-            # 3D file converters
             assimp
-
-            # Rendering engines
             povray
             yafaray
           ];
-
-          # GPU acceleration for 3D work
-          hardware.opengl = {
+          hardware.graphics = {
             extraPackages = with pkgs; [
-              # CUDA support (if NVIDIA)
-              # cudatoolkit
-
-              # OpenCL
               opencl-headers
               ocl-icd
             ];
           };
-
-          # 3D modeling environment variables
           environment.variables = {
-            # Blender optimizations
             BLENDER_USER_CONFIG = "$HOME/.config/blender";
             BLENDER_USER_SCRIPTS = "$HOME/.config/blender/scripts";
-
-            # OpenGL optimizations
             __GL_SHADER_DISK_CACHE = "1";
             __GL_SHADER_DISK_CACHE_PATH = "/tmp/gl-shader-cache";
           };
         })
-
-        # Streaming Configuration
         (lib.mkIf cfg.streaming.enable {
           environment.systemPackages = with pkgs; [
-            # Streaming software
             (lib.mkIf cfg.streaming.software.obs obs-studio)
-
-            # Streaming utilities
             ffmpeg-full
             rtmp-dump
-
-            # Chat tools
-            chatty # Twitch chat
-
-            # Stream tools
+            chatty
             streamlink
             youtube-dl
             yt-dlp
           ];
-
-          # OBS Studio with plugins
           programs.obs-studio = lib.mkIf cfg.streaming.software.obs {
             enable = true;
             plugins = with pkgs.obs-studio-plugins; [
-              wlrobs # Wayland capture
-              obs-vkcapture # Vulkan capture
+              wlrobs
+              obs-vkcapture
               obs-gstreamer
               obs-pipewire-audio-capture
               looking-glass-obs
@@ -677,59 +516,41 @@ in
               droidcam-obs
             ];
           };
-
-          # Streaming optimizations
           boot.kernel.sysctl = {
-            # Network optimizations for streaming
             "net.core.rmem_max" = 134217728;
             "net.core.wmem_max" = 134217728;
             "net.ipv4.tcp_rmem" = "4096 87380 134217728";
             "net.ipv4.tcp_wmem" = "4096 65536 134217728";
             "net.core.netdev_max_backlog" = 30000;
           };
-
-          # Firewall configuration for streaming
           networking.firewall = {
             allowedTCPPorts = [
-              1935 # RTMP
-              8080 # HTTP streaming
-              8554 # RTSP
+              1935
+              8080
+              8554
             ];
             allowedUDPPorts = [
-              1935 # RTMP UDP
-              5004 # RTP
-              5005 # RTCP
+              1935
+              5004
+              5005
             ];
           };
-
-          # V4L2 loopback for virtual cameras
           boot.extraModulePackages = with config.boot.kernelPackages; [
             v4l2loopback
           ];
           boot.kernelModules = ["v4l2loopback"];
         })
-
-        # Collaboration Tools
         (lib.mkIf cfg.collaboration.enable {
           environment.systemPackages = with pkgs;
             [
-              # Version control
               git
               git-lfs
-
-              # Cloud storage
               nextcloud-client
               dropbox
-
-              # File sharing
               syncthing
               rsync
-
-              # Backup tools
               restic
               borgbackup
-
-              # Communication
               discord
               slack
               zoom-us
@@ -741,73 +562,47 @@ in
             ++ lib.optionals cfg.collaboration.version-control.subversion [
               subversion
             ];
-
-          # Git LFS configuration
           programs.git = lib.mkIf cfg.collaboration.version-control.git-lfs {
             enable = true;
             lfs.enable = true;
           };
-
-          # Syncthing for file synchronization
           services.syncthing = lib.mkIf cfg.collaboration.cloud.sync {
             enable = true;
-            user = "media-user"; # Adjust based on actual user
+            user = "media-user";
             dataDir = "/home/media-user/Sync";
             configDir = "/home/media-user/.config/syncthing";
           };
         })
-
-        # Media Production Optimizations
         (lib.mkIf cfg.optimization.enable {
-          # Storage optimizations
           fileSystems = lib.mkIf cfg.optimization.storage.fast-storage {
             "/media" = {
               options = ["noatime" "nodiratime" "discard"];
             };
           };
-
-          # Memory optimizations
           boot.kernel.sysctl = {
-            # Large file handling
             "vm.dirty_ratio" = lib.mkIf cfg.optimization.memory.large-files 20;
             "vm.dirty_background_ratio" = lib.mkIf cfg.optimization.memory.large-files 10;
             "vm.vfs_cache_pressure" = lib.mkIf cfg.optimization.memory.preview-cache 50;
-
-            # Network optimizations
             "net.core.rmem_max" = lib.mkIf cfg.optimization.networking.high-bandwidth 134217728;
             "net.core.wmem_max" = lib.mkIf cfg.optimization.networking.high-bandwidth 134217728;
           };
-
-          # GPU optimizations
           hardware.opengl = lib.mkIf cfg.optimization.gpu.acceleration {
             extraPackages = with pkgs; [
-              # OpenCL for compute tasks
               opencl-headers
               ocl-icd
-
-              # CUDA (if NVIDIA)
-              # cudatoolkit
-              # cudnn
-
-              # ROCm (if AMD)
               rocm-opencl-icd
               rocm-opencl-runtime
             ];
           };
-
-          # I/O scheduler optimization for media workloads
           services.udev.extraRules = ''
-            # Use deadline scheduler for SSDs with media workloads
             ACTION=="add|change", KERNEL=="sd[a-z]*", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="deadline"
             ACTION=="add|change", KERNEL=="nvme[0-9]*n[0-9]*", ATTR{queue/scheduler}="none"
-
-            # Increase read-ahead for large media files
             ACTION=="add|change", KERNEL=="sd[a-z]*", ATTR{bdi/read_ahead_kb}="8192"
             ACTION=="add|change", KERNEL=="nvme[0-9]*n[0-9]*", ATTR{bdi/read_ahead_kb}="8192"
           '';
         })
       ];
-
-    # Dependencies
     dependencies = ["core" "hardware" "audio"];
+  }) {
+    inherit config lib pkgs inputs;
   }

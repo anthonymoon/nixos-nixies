@@ -1,6 +1,4 @@
 {
-  # Package set modules for NixOS Unified
-
   imports = [
     ./sets/browsers.nix
     ./sets/core.nix

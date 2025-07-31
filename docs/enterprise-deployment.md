@@ -7,6 +7,7 @@ The `enterprise-server` profile provides a production-ready, hardened NixOS conf
 ## Key Features
 
 ### 🔐 Security & Compliance
+
 - **Multi-framework compliance**: SOC 2, CIS Benchmarks, NIST Cybersecurity Framework
 - **Hardened kernel**: Linux hardened kernel with security patches
 - **Advanced access controls**: RBAC, MFA support, least privilege enforcement
@@ -15,6 +16,7 @@ The `enterprise-server` profile provides a production-ready, hardened NixOS conf
 - **Network security**: Fail2ban, advanced firewall rules, traffic analysis
 
 ### 📊 Monitoring & Observability
+
 - **Prometheus metrics**: System, security, and compliance metrics
 - **Grafana dashboards**: Enterprise-focused visualizations
 - **ELK Stack**: Centralized logging with Elasticsearch, Logstash, Kibana
@@ -22,6 +24,7 @@ The `enterprise-server` profile provides a production-ready, hardened NixOS conf
 - **Health checks**: Automated deployment validation
 
 ### 🚀 Deployment & Operations
+
 - **Infrastructure as Code**: Ansible playbooks and Terraform modules
 - **CI/CD pipelines**: Jenkins with security scanning
 - **Blue-green deployments**: Zero-downtime deployment strategies
@@ -373,21 +376,25 @@ Minimum recommended specifications:
 ### Regular Tasks
 
 #### Daily
+
 - Monitor system health dashboards
 - Review security alerts
 - Check backup completion
 
 #### Weekly
+
 - Review compliance reports
 - Update threat intelligence feeds
 - Validate backup integrity
 
 #### Monthly
+
 - Security vulnerability assessment
 - Performance optimization review
 - Compliance framework updates
 
 #### Quarterly
+
 - Disaster recovery testing
 - Security audit and penetration testing
 - Documentation updates

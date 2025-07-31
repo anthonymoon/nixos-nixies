@@ -7,12 +7,14 @@ The `enterprise-workstation` profile provides a comprehensive, secure, and user-
 ## Key Features
 
 ### 🖥️ Desktop Environment
+
 - **GNOME Desktop**: Enterprise-friendly with locked settings and corporate branding
 - **Professional Applications**: LibreOffice, Thunderbird, Firefox ESR, VS Code
 - **Accessibility Support**: Screen reader, magnification, high contrast themes
 - **Multi-language Support**: International fonts and input methods
 
 ### 🔐 Security & Compliance
+
 - **Endpoint Protection**: ClamAV antivirus with real-time scanning
 - **Data Loss Prevention**: USB blocking, file monitoring, content inspection
 - **Application Security**: Sandboxing with Firejail, code signing verification
@@ -20,6 +22,7 @@ The `enterprise-workstation` profile provides a comprehensive, secure, and user-
 - **Compliance Frameworks**: SOC 2, ISO 27001, NIST alignment
 
 ### 🏢 Enterprise Integration
+
 - **Identity Management**: Active Directory, Azure AD, LDAP integration
 - **Single Sign-On**: SAML, OIDC, OAuth2 support
 - **VPN Integration**: OpenVPN, OpenConnect, WireGuard clients
@@ -27,6 +30,7 @@ The `enterprise-workstation` profile provides a comprehensive, secure, and user-
 - **Device Management**: Automated provisioning and policy enforcement
 
 ### 💼 Productivity Suite
+
 - **Office Applications**: LibreOffice with enterprise templates
 - **Communication Tools**: Teams, Slack, Element, Zoom integration
 - **PDF Management**: Editing, signing, encryption capabilities
@@ -138,6 +142,7 @@ security = {
 ### Endpoint Protection
 
 #### ClamAV Antivirus
+
 - **Real-time scanning**: Monitors file system changes
 - **Scheduled scans**: Daily full system scans
 - **Quarantine system**: Automatic threat isolation
@@ -156,6 +161,7 @@ ls -la /var/lib/clamav/quarantine/
 ```
 
 #### Data Loss Prevention
+
 - **USB device control**: Configurable device whitelisting
 - **File monitoring**: Sensitive data detection
 - **Screen capture protection**: Prevents unauthorized screenshots
@@ -175,6 +181,7 @@ tail -f /var/log/dlp-events.log
 ### Application Security
 
 #### Sandboxing with Firejail
+
 Applications run in isolated environments:
 
 ```bash
@@ -189,6 +196,7 @@ ls /etc/firejail/
 ```
 
 #### Browser Security
+
 - **Firefox ESR**: Enterprise security policies
 - **Extension control**: Managed extension installation
 - **Safe browsing**: Enhanced phishing protection
@@ -197,6 +205,7 @@ ls /etc/firejail/
 ### Network Security
 
 #### DNS Filtering
+
 ```nix
 networking.nameservers = [
   "1.1.1.2"    # Cloudflare for Families
@@ -206,6 +215,7 @@ networking.nameservers = [
 ```
 
 #### Firewall Configuration
+
 ```nix
 networking.firewall = {
   enable = true;
@@ -224,6 +234,7 @@ networking.firewall = {
 ### Identity Management
 
 #### Active Directory Integration
+
 ```nix
 # Kerberos configuration
 krb5 = {
@@ -253,6 +264,7 @@ services.sssd = {
 ```
 
 #### Single Sign-On (SSO)
+
 Support for multiple SSO protocols:
 
 - **SAML 2.0**: Industry standard for enterprise SSO
@@ -278,6 +290,7 @@ wg-quick up company-vpn
 ### Remote Management
 
 #### SSH Configuration
+
 ```nix
 services.openssh = {
   enable = true;
@@ -292,6 +305,7 @@ services.openssh = {
 ```
 
 #### Device Monitoring
+
 ```bash
 # View device inventory
 cat /var/lib/workstation-manager/inventory/$(hostname)-$(date +%Y%m%d).json
@@ -308,6 +322,7 @@ cat /var/lib/workstation-manager/health/health-latest.json
 ### Office Suite
 
 #### LibreOffice Configuration
+
 - **Enterprise templates**: Company letterheads and documents
 - **Security settings**: Macro restrictions and document protection
 - **Format support**: Microsoft Office compatibility
@@ -321,6 +336,7 @@ libreoffice --impress presentation.pptx
 ```
 
 #### PDF Tools
+
 - **Editing**: Master PDF Editor for document modification
 - **Signing**: Digital signatures with smart cards
 - **Forms**: PDF form filling and submission
@@ -329,6 +345,7 @@ libreoffice --impress presentation.pptx
 ### Communication Tools
 
 #### Email Configuration
+
 Thunderbird with enterprise security:
 
 ```json
@@ -347,6 +364,7 @@ Thunderbird with enterprise security:
 ```
 
 #### Messaging Platforms
+
 - **Microsoft Teams**: Native Linux client with full features
 - **Slack**: Workspace integration with SSO
 - **Element**: Matrix protocol for secure messaging
@@ -355,6 +373,7 @@ Thunderbird with enterprise security:
 ### Development Tools
 
 #### Visual Studio Code
+
 Pre-configured with enterprise extensions:
 
 ```bash
@@ -368,6 +387,7 @@ code --user-data-dir /etc/enterprise/vscode-config
 ```
 
 #### Git Configuration
+
 Enterprise-ready version control:
 
 ```nix
@@ -388,6 +408,7 @@ programs.git = {
 ### Automated Provisioning
 
 #### Zero-Touch Deployment
+
 ```bash
 # Create deployment image
 ./scripts/create-deployment-image.sh --profile enterprise-workstation
@@ -400,6 +421,7 @@ dhcp-option 67 "nixos-workstation.iso"
 ```
 
 #### User Provisioning
+
 ```bash
 # Sync user profile from AD
 rsync -av "ldap://ad.enterprise.com/profiles/$USERNAME/" "/home/$USERNAME/"
@@ -414,6 +436,7 @@ rsync -av "ldap://ad.enterprise.com/profiles/$USERNAME/" "/home/$USERNAME/"
 ### Software Deployment
 
 #### Package Management
+
 ```bash
 # Install enterprise applications
 nix-env -iA nixos.libreoffice-fresh
@@ -438,10 +461,10 @@ curl -X POST http://app-catalog.enterprise.local/request \
   -d '{"application": "vscode", "justification": "development work"}'
 ```
 
-
 ### Compliance Monitoring
 
 #### Automated Checks
+
 ```bash
 # Run compliance assessment
 systemctl start compliance-check
@@ -454,6 +477,7 @@ jq '.compliance_score' /var/lib/workstation-manager/compliance/latest.json
 ```
 
 #### Audit Logging
+
 ```bash
 # View audit events
 ausearch -m LOGIN_FAILED
@@ -469,6 +493,7 @@ auditctl -w /etc/passwd -p wa -k identity_changes
 ### Common Issues
 
 #### Desktop Environment Problems
+
 ```bash
 # Restart GNOME Shell
 killall gnome-shell
@@ -482,6 +507,7 @@ journalctl -u gdm -f
 ```
 
 #### Security Service Issues
+
 ```bash
 # Check antivirus status
 systemctl status clamav-daemon
@@ -496,6 +522,7 @@ pkcs11-tool --list-slots
 ```
 
 #### Network Connectivity
+
 ```bash
 # Check VPN status
 nmcli connection show --active
@@ -513,6 +540,7 @@ ip addr show
 ### Log Analysis
 
 #### System Logs
+
 ```bash
 # View system events
 journalctl --since "1 hour ago" | grep -i error
@@ -527,6 +555,7 @@ systemctl list-units --type=service --state=failed
 ```
 
 #### Security Events
+
 ```bash
 # Failed login attempts
 grep "Failed password" /var/log/auth.log
@@ -544,6 +573,7 @@ journalctl -t security-monitor
 ### Performance Optimization
 
 #### Resource Monitoring
+
 ```bash
 # System performance
 htop
@@ -560,6 +590,7 @@ cat /proc/meminfo
 ```
 
 #### Application Performance
+
 ```bash
 # Browser performance
 firefox --safe-mode
@@ -576,23 +607,27 @@ code --disable-extensions
 ### Regular Tasks
 
 #### Daily
+
 - Monitor security alerts and notifications
 - Check system health dashboards
 - Review failed login attempts
 
 #### Weekly
+
 - Update antivirus signatures
 - Review compliance reports
 - Check disk space and cleanup
 - Validate backup integrity
 
 #### Monthly
+
 - Security patch assessment
 - User training updates
 - Policy compliance review
 - Performance optimization
 
 #### Quarterly
+
 - Full security audit
 - Compliance framework updates
 - Disaster recovery testing
@@ -601,6 +636,7 @@ code --disable-extensions
 ### Update Procedures
 
 #### System Updates
+
 ```bash
 # Check for updates
 nix-channel --update
@@ -615,6 +651,7 @@ systemctl is-system-running
 ```
 
 #### Security Updates
+
 ```bash
 # Update antivirus signatures
 freshclam
@@ -630,18 +667,21 @@ update-ca-certificates
 ## Deployment Scenarios
 
 ### Small Office (< 50 users)
+
 - Manual deployment with Ansible playbooks
 - Shared credentials management
 - Basic monitoring and logging
 - Weekly maintenance windows
 
 ### Medium Enterprise (50-500 users)
+
 - Automated provisioning with PXE boot
 - Active Directory integration
 - Centralized monitoring and alerting
 - Daily update cycles with testing
 
 ### Large Corporation (500+ users)
+
 - Zero-touch deployment infrastructure
 - Advanced device management (MDM)
 - SIEM integration for security monitoring
@@ -650,21 +690,24 @@ update-ca-certificates
 ## Support Resources
 
 ### Documentation
+
 - **User Guides**: End-user documentation for applications
 - **Admin Guides**: System administration procedures
 - **Security Policies**: Enterprise security requirements
 - **Troubleshooting**: Common issues and solutions
 
 ### Training Materials
+
 - **Security Awareness**: Phishing, malware, data protection
 - **Application Training**: Office suite, communication tools
 - **Remote Work**: VPN, collaboration, security practices
 - **Incident Response**: Reporting procedures and contacts
 
 ### Support Contacts
-- **Help Desk**: internal-help@company.com
-- **Security Team**: security@company.com
-- **IT Operations**: itops@company.com
+
+- **Help Desk**: <internal-help@company.com>
+- **Security Team**: <security@company.com>
+- **IT Operations**: <itops@company.com>
 - **Emergency**: +1-555-IT-HELP
 
 ---
