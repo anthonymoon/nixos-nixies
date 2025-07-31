@@ -39,6 +39,15 @@
         ++ [
           commonConfig
           ../configurations/systems/nixies.nix
+          {
+            nixpkgs.overlays = [
+              inputs.nix-gaming.overlays.default
+            ];
+            imports = [
+              inputs.nix-gaming.nixosModules.pipewireLowLatency
+              inputs.nix-gaming.nixosModules.platformOptimizations
+            ];
+          }
         ];
     };
   };

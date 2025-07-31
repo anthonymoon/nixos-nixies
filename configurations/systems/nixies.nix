@@ -92,7 +92,18 @@
     tree
     rsync
     lact # AMD GPU control
-    nvtop # GPU monitoring
+    amdgpu_top # AMD-specific GPU monitoring
+    
+    # Gaming tools
+    mangohud # FPS overlay
+    gamescope # Wayland game compositor
+    gamemode # Performance mode switcher
+    vkbasalt # Vulkan post-processing
+    
+    # Wine and Proton dependencies
+    wine-staging
+    winetricks
+    protontricks
   ];
 
   # Enable SSH for remote access
@@ -218,6 +229,42 @@
 
   # Use latest kernel for best hardware support
   boot.kernelPackages = pkgs.linuxPackages_latest;
+
+  # Gaming optimizations
+  programs.steam = {
+    enable = true;
+    remotePlay.openFirewall = true;
+    dedicatedServer.openFirewall = true;
+    gamescopeSession.enable = true;
+  };
+
+  # Enable gamemode for performance optimization
+  programs.gamemode = {
+    enable = true;
+    settings = {
+      general = {
+        renice = 10;
+        ioprio = 0;
+        inhibit_screensaver = 1;
+      };
+      gpu = {
+        apply_gpu_optimisations = "accept-responsibility";
+        gpu_device = 0;
+        amd_performance_level = "high";
+      };
+    };
+  };
+
+  # Nix-gaming optimizations
+  services.pipewire.lowLatency = {
+    enable = true;
+    # 32 samples is ~0.7ms latency at 48kHz
+    quantum = 32;
+    rate = 48000;
+  };
+
+  # Platform optimizations from nix-gaming
+  programs.steam.platformOptimizations.enable = true;
 
   # System state version
   system.stateVersion = "24.11";
