@@ -15,7 +15,7 @@
     "nvme" "nvme_core" "nvme_auth"
     "xhci_pci" "xhci_hcd" 
     "usbhid" "uas" "sd_mod" 
-    "ahci" "sata_ahci"
+    "ahci"
   ];
   boot.extraModulePackages = [ ];
   
