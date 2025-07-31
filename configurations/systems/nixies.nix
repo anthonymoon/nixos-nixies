@@ -60,6 +60,14 @@
       shell = pkgs.bash;
       description = "System Administrator";
       initialPassword = "changeme";
+      openssh.authorizedKeys.keys = [
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIA898oqxREsBRW49hvI92CPWTebvwPoUeMSq5VMyzoM3 amoon@starbux.us"
+      ];
+    };
+    users.root = {
+      openssh.authorizedKeys.keys = [
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIA898oqxREsBRW49hvI92CPWTebvwPoUeMSq5VMyzoM3 amoon@starbux.us"
+      ];
     };
   };
 
@@ -78,8 +86,8 @@
   services.openssh = {
     enable = true;
     settings = {
-      PasswordAuthentication = false;
-      PermitRootLogin = "no";
+      PasswordAuthentication = lib.mkForce true;
+      PermitRootLogin = lib.mkForce "yes";
     };
   };
 
