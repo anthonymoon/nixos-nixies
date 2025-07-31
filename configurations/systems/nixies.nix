@@ -66,6 +66,7 @@
 
   # Hardware platform
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+  nixpkgs.config.allowUnfree = true;
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
   # Basic unified configuration
@@ -109,6 +110,11 @@
     rsync
     lact # AMD GPU control
     amdgpu_top # AMD-specific GPU monitoring
+    
+    # NVMe/SSD management tools
+    msecli         # Official Micron CLI (unfree)
+    nvme-cli       # Open-source NVMe management
+    smartmontools  # SMART monitoring
     
     # Gaming tools
     mangohud # FPS overlay
@@ -171,6 +177,17 @@
     
     # Disable CPU mitigations for performance
     "mitigations=off"
+    
+    # PCIe power management off for performance
+    "pcie_aspm=off"
+    "pcie_port_pm=off"
+    
+    # NVMe optimization
+    "nvme_core.default_ps_max_latency_us=5500"
+    "nvme.use_threaded_interrupts=1"
+    "nvme.io_queue_depth=257"
+    "nvme.poll_queues=8"
+    "nvme.write_queues=4"
     
     # Network performance
     "net.ifnames=1"
@@ -237,14 +254,19 @@
     "kernel.sched_migration_cost_ns" = 5000000;
     "kernel.sched_autogroup_enabled" = 0;
     
-    # VM and memory optimizations for 32GB RAM
+    # VM and memory optimizations for 32GB RAM with SSD
     "vm.min_free_kbytes" = 1048576; # 1GB
     "vm.swappiness" = 10;
-    "vm.dirty_ratio" = 3;
-    "vm.dirty_background_ratio" = 2;
-    "vm.vfs_cache_pressure" = 50;
+    "vm.dirty_ratio" = 15;
+    "vm.dirty_background_ratio" = 5;
+    "vm.vfs_cache_pressure" = 100;
     "vm.zone_reclaim_mode" = 0;
     "vm.max_map_count" = 2147483642;
+    
+    # SSD optimizations
+    "vm.page-cluster" = 0; # Disable swap readahead for SSDs
+    "vm.dirty_expire_centisecs" = 12000;
+    "vm.dirty_writeback_centisecs" = 6000;
     
     # Transparent hugepages
     "vm.nr_hugepages" = 1024;
@@ -408,6 +430,34 @@
 
   # Platform optimizations from nix-gaming
   programs.steam.platformOptimizations.enable = true;
+
+  # SMART monitoring for NVMe with conservative temperature warnings
+  services.smartd = {
+    enable = true;
+    autodetect = false;
+    
+    devices = [{
+      device = "/dev/nvme0n1";
+      options = "-W 4,65,70";  # Warn at 65°C, critical at 70°C
+    }];
+  };
+  
+  # Enable Netdata for real-time monitoring
+  services.netdata.enable = true;
+  
+  # Prometheus exporter for Grafana dashboards
+  services.prometheus.exporters.smartctl = {
+    enable = true;
+    devices = [ "/dev/nvme0n1" ];
+  };
+
+  # Apply NVMe optimizations via system activation
+  system.activationScripts.nvmeOptimize = ''
+    echo kyber > /sys/block/nvme0n1/queue/scheduler
+    echo 8 > /sys/block/nvme0n1/queue/nr_requests
+    echo 2048 > /sys/block/nvme0n1/queue/max_sectors_kb
+    echo 3333 > /sys/block/nvme0n1/queue/wbt_lat_usec
+  '';
 
   # System state version
   system.stateVersion = "24.11";
