@@ -144,23 +144,7 @@
         }
       ];
     };
-    fail2ban = {
-      enable = true;
-      bantime = "1h";
-      bantime-increment = {
-        enable = true;
-        maxtime = "168h";
-        factor = "4";
-      };
-      maxretry = 3;
-      ignoreIP = [
-        "127.0.0.1/8"
-        "::1"
-        "10.0.0.0/8"
-        "172.16.0.0/12"
-        "192.168.0.0/16"
-      ];
-    };
+    # fail2ban disabled - requires firewall to be enabled
     journald.extraConfig = ''
       SystemMaxUse=100M
       SystemMaxFileSize=10M
