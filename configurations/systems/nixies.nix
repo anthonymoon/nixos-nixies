@@ -11,8 +11,24 @@
   ];
 
   # Hardware configuration based on nixos-generate-config output
-  boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "usbhid" "uas" "sd_mod" ];
+  boot.initrd.availableKernelModules = [ 
+    "nvme" "nvme_core" "nvme_auth"
+    "xhci_pci" "xhci_hcd" 
+    "usbhid" "uas" "sd_mod" 
+    "ahci" "sata_ahci"
+  ];
   boot.extraModulePackages = [ ];
+  
+  # Additional kernel modules for hardware support
+  boot.kernelModules = [ 
+    "kvm-amd" "amdgpu" 
+    "i40e" # Intel X710 NIC
+    "iwlwifi" "iwlmvm" # Intel AX200 WiFi
+    "ccp" # AMD Cryptographic Coprocessor
+    "k10temp" # AMD CPU temperature monitoring
+    "sp5100_tco" # AMD watchdog
+    "piix4_smbus" # SMBus support
+  ];
 
   # Boot loader configuration
   boot.loader = {
@@ -141,15 +157,46 @@
 
   # Kernel modules for AMD GPU
   boot.initrd.kernelModules = [ "amdgpu" ];
-  boot.kernelModules = [ "kvm-amd" "amdgpu" ];
   boot.kernelParams = [
+    # AMD CPU/GPU optimizations
     "amd_pstate=active"
+    "amd_iommu=on"
+    "iommu=pt"
     "amdgpu.ppfeaturemask=0xffffffff"
     "amdgpu.gpu_recovery=1"
     "amdgpu.dpm=1"
     "amdgpu.dc=1"
     "amdgpu.runpm=0"
     "amdgpu.audio=1"
+    
+    # Disable CPU mitigations for performance
+    "mitigations=off"
+    
+    # Network performance
+    "net.ifnames=1"
+    "biosdevname=0"
+    
+    # General optimizations
+    "nowatchdog"
+    "nmi_watchdog=0"
+    "threadirqs"
+    "preempt=voluntary"
+    "transparent_hugepage=always"
+    
+    # Disable unnecessary features
+    "nouveau.modeset=0"
+    "nohibernate"
+    
+    # Logging
+    "loglevel=4"
+    
+    # Security modules
+    "lsm=landlock,yama,bpf"
+    
+    # Custom VT colors from your boot args
+    "vt.default_red=0x00,0xCC,0x4E,0xC4,0x34,0x75,0x06,0xD3,0x55,0xEF,0x8A,0xFC,0x73,0xAD,0x34,0xEE"
+    "vt.default_grn=0x00,0x00,0x9A,0xA0,0x65,0x50,0x98,0xD7,0x57,0x29,0xE2,0xE9,0x9F,0x7F,0xE2,0xEE"
+    "vt.default_blu=0x00,0x00,0x06,0x00,0xA4,0x7B,0x9A,0xCF,0x53,0x29,0x29,0x4F,0xCF,0xA8,0xE2,0xEC"
   ];
 
   # TUI greeter
@@ -163,27 +210,54 @@
     };
   };
 
-  # Sysctl optimizations for 20Gbps networking
+  # Sysctl optimizations for 20Gbps networking and hardware
   boot.kernel.sysctl = {
-    # Network performance
-    "net.core.rmem_max" = 134217728;
-    "net.core.wmem_max" = 134217728;
-    "net.ipv4.tcp_rmem" = "4096 87380 134217728";
-    "net.ipv4.tcp_wmem" = "4096 65536 134217728";
-    "net.core.netdev_max_backlog" = 30000;
+    # Network performance for 20Gbps
+    "net.core.rmem_max" = 268435456; # 256MB
+    "net.core.wmem_max" = 268435456; # 256MB
+    "net.ipv4.tcp_rmem" = "4096 87380 268435456";
+    "net.ipv4.tcp_wmem" = "4096 65536 268435456";
+    "net.core.netdev_max_backlog" = 50000;
     "net.ipv4.tcp_congestion_control" = "bbr";
     "net.ipv4.tcp_mtu_probing" = 1;
     "net.core.default_qdisc" = "fq";
     "net.ipv4.tcp_slow_start_after_idle" = 0;
     "net.ipv4.tcp_no_metrics_save" = 1;
+    "net.ipv4.tcp_timestamps" = 0;
+    "net.ipv4.tcp_sack" = 1;
+    "net.ipv4.tcp_low_latency" = 1;
     
     # Intel X710 specific
-    "net.core.netdev_budget" = 600;
-    "net.core.dev_weight" = 64;
+    "net.core.netdev_budget" = 1200;
+    "net.core.dev_weight" = 128;
+    "net.core.busy_poll" = 50;
+    "net.core.busy_read" = 50;
     
-    # ZFS memory tuning for 32GB RAM
+    # IRQ and CPU optimizations
+    "kernel.sched_migration_cost_ns" = 5000000;
+    "kernel.sched_autogroup_enabled" = 0;
+    
+    # VM and memory optimizations for 32GB RAM
     "vm.min_free_kbytes" = 1048576; # 1GB
     "vm.swappiness" = 10;
+    "vm.dirty_ratio" = 3;
+    "vm.dirty_background_ratio" = 2;
+    "vm.vfs_cache_pressure" = 50;
+    "vm.zone_reclaim_mode" = 0;
+    "vm.max_map_count" = 2147483642;
+    
+    # Transparent hugepages
+    "vm.nr_hugepages" = 1024;
+    
+    # NUMA optimizations for AMD
+    "kernel.numa_balancing" = 1;
+    
+    # File system optimizations
+    "fs.file-max" = 2097152;
+    "fs.nr_open" = 1048576;
+    "fs.inotify.max_user_watches" = 1048576;
+    "fs.inotify.max_user_instances" = 8192;
+    "fs.aio-max-nr" = 1048576;
   };
 
   # ZFS configuration optimized for 32GB RAM
@@ -203,9 +277,45 @@
     options zfs l2arc_write_max=134217728
     options zfs zfs_vdev_async_read_max_active=8
     options zfs zfs_vdev_async_write_max_active=8
+    options zfs zfs_vdev_scrub_max_active=3
+    options zfs zfs_vdev_sync_read_min_active=10
+    options zfs zfs_vdev_sync_read_max_active=30
+    options zfs zfs_vdev_sync_write_min_active=10
+    options zfs zfs_vdev_sync_write_max_active=30
     
-    # Intel X710 driver options
+    # Intel X710 driver options for 20Gbps
     options i40e max_vfs=0
+    options i40e int_mode=2
+    options i40e rx_itr=0
+    options i40e tx_itr=0
+    
+    # AMD GPU power management
+    options amdgpu ppfeaturemask=0xffffffff
+    options amdgpu gpu_recovery=1
+    options amdgpu dpm=1
+    options amdgpu dc=1
+    options amdgpu runpm=0
+    options amdgpu audio=1
+    options amdgpu aspm=0
+    options amdgpu bapm=1
+    options amdgpu deep_color=1
+    options amdgpu si_support=1
+    options amdgpu cik_support=1
+    
+    # NVMe optimizations
+    options nvme_core io_timeout=255
+    options nvme_core max_retries=10
+    options nvme_core multipath=Y
+    
+    # USB optimizations
+    options usbcore autosuspend=-1
+    options usbcore use_both_schemes=Y
+    options usbcore initial_descriptor_timeout=10
+    
+    # Intel WiFi optimizations
+    options iwlwifi power_save=0
+    options iwlwifi led_mode=1
+    options iwlmvm power_scheme=1
   '';
 
   # ZFS services
@@ -229,6 +339,39 @@
 
   # Use latest kernel for best hardware support
   boot.kernelPackages = pkgs.linuxPackages_latest;
+  
+  # Power management optimizations
+  powerManagement = {
+    enable = true;
+    cpuFreqGovernor = lib.mkForce "performance";
+  };
+  
+  # CPU performance settings
+  systemd.services.cpu-performance = {
+    description = "Set CPU performance settings";
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = pkgs.writeShellScript "cpu-performance" ''
+        # Disable CPU idle states for maximum performance
+        for cpu in /sys/devices/system/cpu/cpu*/cpuidle/state*/disable; do
+          echo 1 > $cpu 2>/dev/null || true
+        done
+        
+        # Set performance governor
+        for cpu in /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor; do
+          echo performance > $cpu 2>/dev/null || true
+        done
+        
+        # Disable CPU frequency boost limits
+        echo 1 > /sys/devices/system/cpu/cpufreq/boost 2>/dev/null || true
+        
+        # Set PCIe ASPM to performance
+        echo performance > /sys/module/pcie_aspm/parameters/policy 2>/dev/null || true
+      '';
+    };
+  };
 
   # Gaming optimizations
   programs.steam = {
