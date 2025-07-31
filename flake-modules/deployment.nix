@@ -85,15 +85,21 @@
       };
     };
   };
-  flake.apps = {
+  perSystem = {
+    config,
+    pkgs,
+    system,
+    ...
+  }: {
+    apps = {
     deploy-workstation = {
       type = "app";
-      program = toString (inputs.nixpkgs.legacyPackages.x86_64-linux.writeShellScript "deploy-workstation" ''
+      program = toString (pkgs.writeShellScript "deploy-workstation" ''
         set -euo pipefail
         echo "🚀 Deploying workstation configuration..."
         echo "🔍 Running pre-deployment checks..."
         nix run .
-        ${inputs.deploy-rs.packages.x86_64-linux.default}/bin/deploy \
+        ${inputs.deploy-rs.packages.${system}.default}/bin/deploy \
         --hostname workstation.local \
         --profile system \
         --magic-rollback \
@@ -103,7 +109,7 @@
     };
     deploy-server = {
       type = "app";
-      program = toString (inputs.nixpkgs.legacyPackages.x86_64-linux.writeShellScript "deploy-server" ''
+      program = toString (pkgs.writeShellScript "deploy-server" ''
         set -euo pipefail
         echo "🏢 Deploying server configuration..."
         echo "🔒 Running security validation..."
@@ -112,7 +118,7 @@
         nix run .
         echo "🔧 Running configuration validation..."
         nix run .
-        ${inputs.deploy-rs.packages.x86_64-linux.default}/bin/deploy \
+        ${inputs.deploy-rs.packages.${system}.default}/bin/deploy \
         --hostname server.example.com \
         --profile system \
         --remote-build \
@@ -123,7 +129,7 @@
     };
     rollback = {
       type = "app";
-      program = toString (inputs.nixpkgs.legacyPackages.x86_64-linux.writeShellScript "rollback" ''
+      program = toString (pkgs.writeShellScript "rollback" ''
         set -euo pipefail
         if [ $
         echo "Usage: nix run .
@@ -131,7 +137,7 @@
         fi
         hostname="$1"
         echo "🔄 Rolling back $hostname to previous configuration..."
-        ${inputs.deploy-rs.packages.x86_64-linux.default}/bin/deploy \
+        ${inputs.deploy-rs.packages.${system}.default}/bin/deploy \
         --hostname "$hostname" \
         --rollback
         echo "✅ Rollback completed for $hostname"
@@ -139,7 +145,7 @@
     };
     health-check = {
       type = "app";
-      program = toString (inputs.nixpkgs.legacyPackages.x86_64-linux.writeShellScript "health-check" ''
+      program = toString (pkgs.writeShellScript "health-check" ''
         set -euo pipefail
         if [ $
         echo "Usage: nix run .
@@ -163,6 +169,7 @@
         '
         echo "✅ Health check completed for $hostname"
       '');
+    };
     };
   };
 }

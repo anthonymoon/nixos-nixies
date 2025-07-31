@@ -74,7 +74,7 @@
           nixos-generate-config --root /mnt --show-hardware-config > /tmp/hardware-configuration.nix
           echo "💾 Partitioning disk $disk..."
           nix run github:nix-community/disko -- --mode disko \
-          ${./disko-configs}/$profile.nix \
+          ${../configurations/disko}/$profile.nix \
           --arg disk "\"$disk\""
           echo "📦 Installing NixOS with unified configuration..."
           nixos-install --flake ".

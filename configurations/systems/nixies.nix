@@ -7,7 +7,7 @@
 }: {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
-    ../disko/nixies.nix
+    ../disko/nixies-zfs.nix
   ];
 
   # Hardware configuration based on nixos-generate-config output
@@ -22,6 +22,11 @@
     efi.canTouchEfiVariables = true;
     timeout = lib.mkForce 3;
   };
+
+  # ZFS support
+  boot.supportedFilesystems = [ "zfs" ];
+  boot.zfs.devNodes = "/dev/disk/by-id";
+  networking.hostId = "8425e349"; # Required for ZFS
 
   # Network interfaces detected by hardware scan
   networking = {

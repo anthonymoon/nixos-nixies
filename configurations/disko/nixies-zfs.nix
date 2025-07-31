@@ -1,11 +1,11 @@
 # Disko configuration for nixies system with ZFS
-# Single-disk ZFS setup with boot and root pools
+# Single-disk ZFS setup, no encryption, no swap
 {
   disko.devices = {
     disk = {
       main = {
         type = "disk";
-        device = "/dev/nvme0n1"; # Adjust this to your actual disk
+        device = "/dev/disk/by-id/nvme-Sabrent_7D96071617E900002640";
         content = {
           type = "gpt";
           partitions = {
@@ -81,15 +81,6 @@
             type = "zfs_fs";
             options.mountpoint = "legacy";
             mountpoint = "/var/lib";
-          };
-          # Swap zvol
-          "swap" = {
-            type = "zfs_volume";
-            size = "8G";
-            content = {
-              type = "swap";
-              randomEncryption = true;
-            };
           };
         };
       };
